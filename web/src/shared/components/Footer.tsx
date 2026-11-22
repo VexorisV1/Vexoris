@@ -91,12 +91,12 @@ export function Footer({ variant = 'public' }: FooterProps) {
                 className="w-1 h-1 rounded-full"
                 style={{ background: 'var(--info)', boxShadow: '0 0 4px var(--info)' }}
               />
-              خالد شوقي
+              نادية عادل
             </span>
 
             <span className="text-[9px]" style={{ color: 'var(--ink-4)' }}>·</span>
 
-            {/* نادية عادل — Violet */}
+            {/* خالد شوقي — Violet */}
             <span
               className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-extrabold
                          transition-all duration-200 hover:scale-105 cursor-default whitespace-nowrap"
@@ -111,7 +111,7 @@ export function Footer({ variant = 'public' }: FooterProps) {
                 className="w-1 h-1 rounded-full"
                 style={{ background: 'var(--violet)', boxShadow: '0 0 4px var(--violet)' }}
               />
-              نادية عادل
+              خالد شوقي
             </span>
           </div>
         </div>

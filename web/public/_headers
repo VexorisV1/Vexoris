@@ -1,9 +1,9 @@
 # تثبيت أنواع الملفات الأساسية
 /*.js
-  Content-Type: application/javascript; charset=utf-8
+  Content-Type: text/javascript; charset=utf-8
 
 /*.mjs
-  Content-Type: application/javascript; charset=utf-8
+  Content-Type: text/javascript; charset=utf-8
 
 /*.css
   Content-Type: text/css; charset=utf-8
