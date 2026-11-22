@@ -37,3 +37,26 @@ supabase/.branches/
 *.tsbuildinfo
 coverage/
 .vexoris-db.env
+
+# ==============================
+# DB dumps (PII - never commit)
+# ==============================
+*.sql
+!supabase/migrations/*.sql
+old_data.sql
+old_schema.sql
+old_auth_data.sql
+doctors_only.sql
+reviews_only.sql
+*_apply.log
+apply.log
+
+# ==============================
+# Env files (secrets)
+# ==============================
+.env
+.env.local
+.env.*.local
+.env*.bak
+.env.local.bak
+!.env.example
