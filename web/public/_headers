@@ -17,7 +17,7 @@
 /*.svg
   Content-Type: image/svg+xml
 
-# رؤوس الأمان التي أضفتها سابقاً (احتفظ بها)
+# رؤوس الأمان (احتفظ بها)
 /*
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
