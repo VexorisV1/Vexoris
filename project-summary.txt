@@ -1,0 +1,2925 @@
+## FILE TREE
+.gitignore
+web/.env.example
+web/.gitignore
+web/.oxlintrc.json
+web/README.md
+web/index.html
+web/package.json
+web/postcss.config.js
+web/public/_headers
+web/src/App.tsx
+web/src/core/auth.tsx
+web/src/core/queryClient.ts
+web/src/core/rpc.ts
+web/src/core/supabase.ts
+web/src/core/types.ts
+web/src/hooks/useDashboard.ts
+web/src/index.css
+web/src/main.tsx
+web/src/modules/auth/AuthCallbackPage.tsx
+web/src/modules/auth/ChangePasswordPage.tsx
+web/src/modules/auth/LoginPage.tsx
+web/src/modules/auth/MfaSetupPage.tsx
+web/src/modules/auth/MfaVerifyPage.tsx
+web/src/modules/auth/ProfilePage.tsx
+web/src/modules/auth/ProtectedRoute.tsx
+web/src/modules/auth/SessionsPage.tsx
+web/src/modules/auth/SetupAccountPage.tsx
+web/src/modules/dashboard/Dashboard.tsx
+web/src/modules/dashboard/Home.tsx
+web/src/shared/components/FontSizeControl.tsx
+web/src/shared/components/Footer.tsx
+web/src/shared/components/Header.tsx
+web/src/shared/components/Loading.tsx
+web/src/shared/components/Logo.tsx
+web/src/shared/components/PlaceholderPage.tsx
+web/src/shared/components/Sidebar.tsx
+web/src/shared/components/ThemeToggle.tsx
+web/src/shared/components/UserChip.tsx
+web/src/shared/layouts/AppLayout.tsx
+web/src/shared/layouts/WorkspaceLayout.tsx
+web/src/shared/lib/cn.ts
+web/src/shared/lib/format.ts
+web/src/shared/lib/roles.ts
+web/src/vite-env.d.ts
+web/tailwind.config.js
+web/tsconfig.app.json
+web/tsconfig.json
+web/tsconfig.node.json
+web/vite.config.ts
+web/wrangler.jsonc
+
+=== .gitignore ===
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build output
+dist/
+dist-ssr/
+build/
+
+# Environment (لا ترفع أي مفاتيح!)
+.env
+.env.local
+.env.*.local
+*.local
+
+# Editor
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Supabase
+supabase/.temp/
+supabase/.branches/
+
+# Misc
+*.tsbuildinfo
+coverage/
+.vexoris-db.env
+
+# ==============================
+# DB dumps (PII - never commit)
+# ==============================
+*.sql
+!supabase/migrations/*.sql
+old_data.sql
+old_schema.sql
+old_auth_data.sql
+doctors_only.sql
+reviews_only.sql
+*_apply.log
+apply.log
+
+# ==============================
+# Env files (secrets)
+# ==============================
+.env
+.env.local
+.env.*.local
+.env*.bak
+.env.local.bak
+!.env.example
+
+=== web/.env.example ===
+VITE_SUPABASE_URL=
+VITE_SUPABASE_ANON_KEY=
+
+=== web/.gitignore ===
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+=== web/.oxlintrc.json ===
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["react", "typescript", "oxc"],
+  "rules": {
+    "react/rules-of-hooks": "error",
+    "react/only-export-components": ["warn", { "allowConstantExport": true }]
+  }
+}
+
+=== web/README.md ===
+# React + TypeScript + Vite
+
+This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+
+Currently, two official plugins are available:
+
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+
+## React Compiler
+
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+
+## Expanding the Oxlint configuration
+
+If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+
+```json
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["react", "typescript", "oxc"],
+  "options": {
+    "typeAware": true
+  },
+  "rules": {
+    "react/rules-of-hooks": "error",
+    "react/only-export-components": ["warn", { "allowConstantExport": true }]
+  }
+}
+```
+
+See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+
+=== web/index.html ===
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VEXORIS</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+
+=== web/package.json ===
+{
+  "name": "web",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "lint": "oxlint",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^7.0.7",
+    "@supabase/supabase-js": "^2.119.2",
+    "@tanstack/react-query": "^5.108.1",
+    "clsx": "^2.1.1",
+    "framer-motion": "^14.14.0",
+    "lucide-react": "^1.76.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "react-hook-form": "^7.92.0",
+    "react-router-dom": "^7.18.6",
+    "tailwind-merge": "^3.7.0",
+    "zod": "^4.6.7",
+    "zustand": "^5.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.19.2",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.2",
+    "autoprefixer": "^10.6.2",
+    "oxlint": "^1.90.0",
+    "postcss": "^8.5.33",
+    "tailwindcss": "^3.4.0",
+    "typescript": "~7.0.2",
+    "vite": "^8.3.6"
+  }
+}
+
+=== web/postcss.config.js ===
+export default {
+  plugins: {
+    tailwindcss: {},
+    autoprefixer: {},
+  },
+}
+
+=== web/public/_headers ===
+# 1. قواعد صارمة لملفات JavaScript (بما فيها ملفات Vite داخل /assets/)
+/assets/*.js
+  Content-Type: application/javascript; charset=utf-8
+
+/*.js
+  Content-Type: application/javascript; charset=utf-8
+
+/*.mjs
+  Content-Type: application/javascript; charset=utf-8
+
+# 2. قواعد صارمة لملفات CSS
+/assets/*.css
+  Content-Type: text/css; charset=utf-8
+
+/*.css
+  Content-Type: text/css; charset=utf-8
+
+# 3. أنواع أخرى
+/*.ico
+  Content-Type: image/x-icon
+
+/*.svg
+  Content-Type: image/svg+xml
+
+# 4. رؤوس الأمان (احتفظ بها)
+/*
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+
+=== web/src/App.tsx ===
+import { lazy, Suspense, useEffect, useRef } from 'react';
+import { Routes, Route } from 'react-router-dom';
+import { AppLayout } from './shared/layouts/AppLayout';
+import { WorkspaceLayout } from './shared/layouts/WorkspaceLayout';
+import { FullPageLoading } from './shared/components/Loading';
+import { PlaceholderPage } from './shared/components/PlaceholderPage';
+import { ProtectedRoute } from './modules/auth/ProtectedRoute';
+
+const Home             = lazy(() => import('./modules/dashboard/Home'));
+const Dashboard        = lazy(() => import('./modules/dashboard/Dashboard'));
+const LoginPage        = lazy(() => import('./modules/auth/LoginPage'));
+const MfaVerifyPage    = lazy(() => import('./modules/auth/MfaVerifyPage'));
+const AuthCallbackPage = lazy(() => import('./modules/auth/AuthCallbackPage'));
+const SetupAccountPage = lazy(() => import('./modules/auth/SetupAccountPage'));
+const MfaSetupPage     = lazy(() => import('./modules/auth/MfaSetupPage'));
+const ProfilePage      = lazy(() => import('./modules/auth/ProfilePage'));
+const ChangePasswordPage = lazy(() => import('./modules/auth/ChangePasswordPage'));
+const SessionsPage     = lazy(() => import('./modules/auth/SessionsPage'));
+
+function CursorGlow() {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const h = (e: MouseEvent) => {
+      if (ref.current) {
+        ref.current.style.left = `${e.clientX}px`;
+        ref.current.style.top = `${e.clientY}px`;
+      }
+    };
+    window.addEventListener('mousemove', h, { passive: true });
+    return () => window.removeEventListener('mousemove', h);
+  }, []);
+  return <div ref={ref} className="cursor-glow" />;
+}
+
+export default function App() {
+  return (
+    <>
+      <CursorGlow />
+      <Suspense fallback={<FullPageLoading label="جارٍ التحميل..." />}>
+        <Routes>
+          {/* Public */}
+          <Route element={<AppLayout />}>
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/auth/mfa" element={<MfaVerifyPage />} />
+            <Route path="/auth/callback" element={<AuthCallbackPage />} />
+            <Route path="/about" element={<PlaceholderPage title="عن النظام" />} />
+            <Route path="/security" element={<PlaceholderPage title="الأمان" />} />
+          </Route>
+
+          {/* Auth required — no sidebar (setup flow) */}
+          <Route element={<ProtectedRoute />}>
+            <Route element={<AppLayout />}>
+              <Route path="/auth/setup-account" element={<SetupAccountPage />} />
+              <Route path="/auth/mfa-setup" element={<MfaSetupPage />} />
+            </Route>
+          </Route>
+
+          {/* Auth required — with sidebar */}
+          <Route element={<ProtectedRoute />}>
+            <Route element={<WorkspaceLayout />}>
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/profile" element={<ProfilePage />} />
+              <Route path="/change-password" element={<ChangePasswordPage />} />
+              <Route path="/sessions" element={<SessionsPage />} />
+              <Route path="/analytics" element={<PlaceholderPage title="التحليلات" />} />
+              <Route path="/medical-audit" element={<PlaceholderPage title="المراجعة الطبية" />} />
+              <Route path="/emergency-audit" element={<PlaceholderPage title="مراجعة الطوارئ" />} />
+              <Route path="/doctor-notes" element={<PlaceholderPage title="ملاحظات الأطباء" />} />
+              <Route path="/discharge" element={<PlaceholderPage title="مؤشر الخروج" />} />
+              <Route path="/workflow" element={<PlaceholderPage title="سير العمل" />} />
+              <Route path="/courses" element={<PlaceholderPage title="الدورات" />} />
+              <Route path="/library" element={<PlaceholderPage title="المكتبة" />} />
+              <Route path="/admin/users" element={<PlaceholderPage title="المستخدمون" />} />
+              <Route path="/admin/rbac" element={<PlaceholderPage title="الصلاحيات" />} />
+              <Route path="/admin/catalogs" element={<PlaceholderPage title="الفهارس" />} />
+              <Route path="/admin/audit-log" element={<PlaceholderPage title="سجل التدقيق" />} />
+              <Route path="/settings" element={<PlaceholderPage title="الإعدادات" />} />
+              <Route path="/help" element={<PlaceholderPage title="المساعدة" />} />
+            </Route>
+          </Route>
+        </Routes>
+      </Suspense>
+    </>
+  );
+}
+
+=== web/src/core/auth.tsx ===
+import { createContext, useContext, useEffect, useState } from 'react';
+import type { ReactNode } from 'react';
+import { supabase } from './supabase';
+import type { Session, User } from '@supabase/supabase-js';
+
+export type Profile = {
+  id: string;
+  username: string | null;
+  display_name: string | null;
+  email: string | null;
+  role: string;
+  is_active: boolean;
+  department: string | null;
+  password_changed: boolean;
+  mfa_setup_done: boolean;
+};
+
+type AuthContextValue = {
+  session: Session | null;
+  user: User | null;
+  profile: Profile | null;
+  loading: boolean;
+  signOut: () => Promise<void>;
+  refreshProfile: () => Promise<void>;
+};
+
+const AuthContext = createContext<AuthContextValue>({
+  session: null, user: null, profile: null, loading: true,
+  signOut: async () => {},
+  refreshProfile: async () => {},
+});
+
+export function AuthProvider({ children }: { children: ReactNode }) {
+  const [session, setSession] = useState<Session | null>(null);
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  async function loadProfile(userId: string) {
+    const { data } = await supabase
+      .from('profiles')
+      .select('id, username, display_name, email, role, is_active, department, password_changed, mfa_setup_done')
+      .eq('id', userId)
+      .single();
+    setProfile((data as Profile) ?? null);
+    setLoading(false);
+  }
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => {
+      setSession(data.session);
+      if (data.session) void loadProfile(data.session.user.id);
+      else setLoading(false);
+    });
+
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => {
+      setSession(s);
+      if (s) void loadProfile(s.user.id);
+      else { setProfile(null); setLoading(false); }
+    });
+
+    return () => sub.subscription.unsubscribe();
+  }, []);
+
+  async function signOut() {
+    await supabase.auth.signOut();
+    setSession(null);
+    setProfile(null);
+  }
+
+  async function refreshProfile() {
+    if (session) await loadProfile(session.user.id);
+  }
+
+  return (
+    <AuthContext.Provider value={{ session, user: session?.user ?? null, profile, loading, signOut, refreshProfile }}>
+      {children}
+    </AuthContext.Provider>
+  );
+}
+
+export function useAuth() { return useContext(AuthContext); }
+
+=== web/src/core/queryClient.ts ===
+import { QueryClient } from '@tanstack/react-query';
+
+export const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 30_000,
+      retry: 1,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
+
+=== web/src/core/rpc.ts ===
+import { supabase } from './supabase';
+import type { OverviewStats, MonthlyTrendPoint, QualityKpis, DateType } from './types';
+
+async function callRpc<T>(name: string, args: Record<string, unknown>, timeoutMs = 35_000): Promise<T> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const { data, error } = await supabase.rpc(name, args).abortSignal(controller.signal);
+    if (error) throw new Error(`${name}: ${error.message}`);
+    return data as T;
+  } catch (err) {
+    if (err instanceof Error && err.name === 'AbortError') {
+      throw new Error(`${name}: timeout after ${timeoutMs}ms`);
+    }
+    throw err;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+export const rpc = {
+  overviewStats: (p_start: string | null, p_end: string | null, p_date_type: DateType) =>
+    callRpc<OverviewStats>('get_overview_stats', { p_start, p_end, p_date_type }, 60_000),
+
+  monthlyTrend: (p_months_back = 12, p_date_type: DateType = 'discharge', p_mode = 'units') =>
+    callRpc<MonthlyTrendPoint[]>('get_monthly_trend', { p_months_back, p_date_type, p_mode }),
+
+  qualityKpis: (p_start: string | null, p_end: string | null, p_date_type: DateType) =>
+    callRpc<QualityKpis>('get_quality_kpis', { p_start, p_end, p_date_type }),
+};
+
+=== web/src/core/supabase.ts ===
+import { createClient } from '@supabase/supabase-js';
+
+const url = import.meta.env.VITE_SUPABASE_URL as string;
+const key = import.meta.env.VITE_SUPABASE_ANON_KEY as string;
+
+if (!url || !key) {
+  throw new Error('Missing Supabase env vars. Check .env.local');
+}
+
+export const supabase = createClient(url, key, {
+  auth: {
+    persistSession: true,
+    autoRefreshToken: true,
+    detectSessionInUrl: true,
+    flowType: 'pkce',
+  },
+});
+
+=== web/src/core/types.ts ===
+export interface OverviewStats {
+  overall_pct: number;
+  total_forms: number;
+  total_units: number;
+  total_clerks: number;
+  total_nurses: number;
+  total_doctors: number;
+  total_reviews: number;
+}
+
+export interface MonthlyTrendPoint {
+  month: string;
+  count: number;
+  percentage: number;
+  total_score: number;
+}
+
+export interface QualityKpis {
+  avg_quality: number;
+  total_files: number;
+  top_reviewer: string;
+  working_days: number;
+  total_reviewers: number;
+  avg_per_reviewer: number;
+}
+
+export type DateType = 'discharge' | 'admission' | 'review';
+
+=== web/src/hooks/useDashboard.ts ===
+import { useQuery } from '@tanstack/react-query';
+import { rpc } from '@/core/rpc';
+import type { DateType } from '@/core/types';
+
+const DASH_CACHE = 5 * 60 * 1000;
+
+export function useOverviewStats(dateType: DateType = 'discharge') {
+  return useQuery({
+    queryKey: ['dashboard', 'overview', dateType],
+    queryFn: () => rpc.overviewStats(null, null, dateType),
+    staleTime: DASH_CACHE,
+    retry: 1,
+  });
+}
+
+export function useMonthlyTrend(monthsBack = 12, dateType: DateType = 'discharge') {
+  return useQuery({
+    queryKey: ['dashboard', 'trend', monthsBack, dateType],
+    queryFn: () => rpc.monthlyTrend(monthsBack, dateType),
+    staleTime: DASH_CACHE,
+  });
+}
+
+export function useQualityKpis(dateType: DateType = 'discharge') {
+  return useQuery({
+    queryKey: ['dashboard', 'quality', dateType],
+    queryFn: () => rpc.qualityKpis(null, null, dateType),
+    staleTime: DASH_CACHE,
+  });
+}
+
+=== web/src/index.css ===
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ═══════════════════════════════════════════════════════════
+   AURORA SKY v4 — Sky & Cloud (Light) / Soft Obsidian (Dark)
+   Primary: Sky ↔ Violet gradient (NO GREEN anywhere)
+   ═══════════════════════════════════════════════════════════ */
+
+:root {
+  /* Light — Sky and cloud layers */
+  --bg:         #dbeafe;    /* blue-100 — soft sky */
+  --bg-2:       #cfe3fc;
+  --surface:    #eff6ff;    /* blue-50 */
+  --surface-2:  #f6faff;
+  --surface-3:  #fbfdff;
+  --glass:      rgba(239, 246, 255, 0.68);
+
+  --line:       #c5d8ef;
+  --line-2:     #a9c3e0;
+  --line-3:     #7f9cbb;
+
+  --ink:        #0c1a33;
+  --ink-2:      #334565;
+  --ink-3:      #64748b;
+  --ink-4:      #95a6bd;
+
+  /* Primary — Violet core, Sky glow */
+  --primary:       #8b5cf6;    /* violet-500 */
+  --primary-h:     #7c3aed;    /* violet-600 */
+  --primary-soft:  rgba(139, 92, 246, 0.12);
+  --primary-glow:  rgba(139, 92, 246, 0.24);
+
+  --grad-from: #0ea5e9;  /* sky-500 */
+  --grad-to:   #8b5cf6;  /* violet-500 */
+
+  --success: #0891b2;    /* cyan-600 — replaced green */
+  --warning: #d97706;
+  --danger:  #dc2626;
+  --info:    #0ea5e9;
+  --violet:  #8b5cf6;
+
+  --header-offset: 88px;
+  --footer-h: 44px;
+  --sidebar-w: 248px;
+  --sidebar-w-collapsed: 64px;
+  --base-font-size: 14px;
+
+  color-scheme: light;
+}
+
+.dark {
+  /* Dark — brighter obsidian navy (not pitch black) */
+  --bg:         #0b1220;    /* deeper navy blue, ~ +5 stops brighter than v3 */
+  --bg-2:       #080f1a;
+  --surface:    #131a26;
+  --surface-2:  #1a2332;
+  --surface-3:  #212b3d;
+  --glass:      rgba(19, 26, 38, 0.65);
+
+  --line:       #1f2b3e;
+  --line-2:     #2b3850;
+  --line-3:     #3d4d69;
+
+  --ink:        #e8eef7;
+  --ink-2:      #b0bccf;
+  --ink-3:      #7d8ca3;
+  --ink-4:      #52627a;
+
+  /* Primary — Brighter violet + sky glow */
+  --primary:       #a78bfa;    /* violet-400 */
+  --primary-h:     #c4b5fd;    /* violet-300 */
+  --primary-soft:  rgba(167, 139, 250, 0.14);
+  --primary-glow:  rgba(167, 139, 250, 0.18);
+
+  --grad-from: #38bdf8;  /* sky-400 */
+  --grad-to:   #a78bfa;  /* violet-400 */
+
+  --success: #22d3ee;    /* cyan-400 — replaced green */
+  --warning: #fbbf24;
+  --danger:  #f87171;
+  --info:    #38bdf8;
+  --violet:  #a78bfa;
+
+  color-scheme: dark;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   BASE
+   ═══════════════════════════════════════════════════════════ */
+@layer base {
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  html {
+    direction: rtl;
+    font-family: 'IBM Plex Sans Arabic', system-ui, sans-serif;
+    font-size: var(--base-font-size);
+    transition: font-size 150ms ease;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-weight: 500;
+    min-height: 100vh;
+    transition: background-color 350ms ease, color 250ms ease;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* ── Sky + Cloud mesh (Light mode) ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: -20%;
+    pointer-events: none;
+    z-index: 0;
+    background:
+      radial-gradient(circle 800px at 15% 10%,  rgba(186, 230, 253, 0.95), transparent 55%),
+      radial-gradient(circle 700px at 85% 18%,  rgba(224, 242, 254, 0.90), transparent 55%),
+      radial-gradient(circle 900px at 50% 85%,  rgba(255, 255, 255, 0.90), transparent 60%),
+      radial-gradient(circle 600px at 18% 88%,  rgba(125, 211, 252, 0.55), transparent 55%),
+      radial-gradient(circle 500px at 92% 70%,  rgba(196, 181, 253, 0.45), transparent 55%),
+      radial-gradient(circle 500px at 50% 40%,  rgba(255, 255, 255, 0.55), transparent 60%),
+      linear-gradient(135deg, #dbeafe 0%, #e0f2fe 35%, #f0f9ff 65%, #dbeafe 100%);
+    animation: cloud-drift 32s ease-in-out infinite;
+  }
+
+  @keyframes cloud-drift {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    25%      { transform: translate(-12px, 6px) scale(1.02); }
+    50%      { transform: translate(8px, -8px) scale(1.01); }
+    75%      { transform: translate(-6px, 10px) scale(1.03); }
+  }
+
+  /* ── Dark ambient glows ── */
+  .dark body::before {
+    inset: 0;
+    background:
+      radial-gradient(circle 700px at 10% 8%,  rgba(167, 139, 250, 0.12), transparent 60%),
+      radial-gradient(circle 600px at 90% 92%, rgba(56, 189, 248, 0.10), transparent 60%),
+      radial-gradient(circle 500px at 50% 50%, rgba(139, 92, 246, 0.05), transparent 70%);
+  }
+
+  /* ── Fine grid ── */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background-image:
+      linear-gradient(to right, var(--line) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--line) 1px, transparent 1px);
+    background-size: 72px 72px;
+    mask-image: radial-gradient(ellipse 80% 65% at 50% 40%, #000 20%, transparent 90%);
+    -webkit-mask-image: radial-gradient(ellipse 80% 65% at 50% 40%, #000 20%, transparent 90%);
+    opacity: 0.30;
+  }
+
+  h1, h2, h3, h4, h5, h6 { font-weight: 700; line-height: 1.2; }
+  h1 { letter-spacing: -0.022em; }
+  h2 { letter-spacing: -0.018em; }
+
+  table, .tabular { font-variant-numeric: tabular-nums; }
+
+  ::selection { background: var(--primary-soft); color: var(--primary); }
+
+  ::-webkit-scrollbar { wid
+=== web/src/main.tsx ===
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import { BrowserRouter } from 'react-router-dom';
+import { QueryClientProvider } from '@tanstack/react-query';
+import { queryClient } from './core/queryClient';
+import { AuthProvider } from './core/auth';
+import { initFontSize } from './shared/components/FontSizeControl';
+import App from './App';
+import './index.css';
+
+initFontSize();
+
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <React.StrictMode>
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        <AuthProvider>
+          <App />
+        </AuthProvider>
+      </BrowserRouter>
+    </QueryClientProvider>
+  </React.StrictMode>,
+);
+=== web/src/modules/auth/AuthCallbackPage.tsx ===
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { FullPageLoading } from '@/shared/components/Loading';
+import { supabase } from '@/core/supabase';
+
+export default function AuthCallbackPage() {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    (async () => {
+      try {
+        // 1. Handle PKCE code exchange (OAuth / email confirmation links)
+        const params = new URLSearchParams(window.location.search);
+        const code = params.get('code');
+        if (code) {
+          const { error: exchErr } = await supabase.auth.exchangeCodeForSession(code);
+          if (exchErr) throw exchErr;
+        }
+
+        // 2. Now read the session
+        const { data, error } = await supabase.auth.getSession();
+        if (error || !data.session) {
+          navigate('/login', { replace: true });
+          return;
+        }
+
+        // 3. Check onboarding state
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('password_changed, mfa_setup_done')
+          .eq('id', data.session.user.id)
+          .single();
+
+        if (profile && !profile.password_changed) {
+          navigate('/auth/setup-account', { replace: true });
+          return;
+        }
+        if (profile && !profile.mfa_setup_done) {
+          navigate('/auth/mfa-setup', { replace: true });
+          return;
+        }
+        navigate('/dashboard', { replace: true });
+      } catch (err) {
+        console.error('Auth callback error:', err);
+        navigate('/login', { replace: true });
+      }
+    })();
+  }, [navigate]);
+
+  return <FullPageLoading label="جارٍ إتمام التحقق..." />;
+}
+
+=== web/src/modules/auth/ChangePasswordPage.tsx ===
+import { useState } from 'react';
+import { motion } from 'framer-motion';
+import { Eye, EyeOff, AlertCircle, CheckCircle2, ShieldCheck } from 'lucide-react';
+import { supabase } from '@/core/supabase';
+import { useAuth } from '@/core/auth';
+
+export default function ChangePasswordPage() {
+  const { user } = useAuth();
+  const [current, setCurrent] = useState('');
+  const [newPass, setNewPass] = useState('');
+  const [confirm, setConfirm] = useState('');
+  const [show, setShow] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [msg, setMsg] = useState<{ type: 'ok' | 'err'; text: string } | null>(null);
+
+  async function submit(e: React.FormEvent) {
+    e.preventDefault(); setMsg(null);
+    if (newPass.length < 8) return setMsg({ type: 'err', text: 'كلمة المرور يجب أن تكون 8 أحرف على الأقل' });
+    if (newPass !== confirm) return setMsg({ type: 'err', text: 'كلمتا المرور غير متطابقتين' });
+    setSaving(true);
+    try {
+      const { error: signErr } = await supabase.auth.signInWithPassword({ email: user!.email!, password: current });
+      if (signErr) throw new Error('كلمة المرور الحالية غير صحيحة');
+      const { error: updErr } = await supabase.auth.updateUser({ password: newPass });
+      if (updErr) throw updErr;
+      setMsg({ type: 'ok', text: 'تم تحديث كلمة المرور بنجاح' });
+      setCurrent(''); setNewPass(''); setConfirm('');
+    } catch (err: unknown) {
+      setMsg({ type: 'err', text: err instanceof Error ? err.message : 'فشل التحديث' });
+    } finally { setSaving(false); }
+  }
+
+  return (
+    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-4 max-w-md">
+      <div>
+        <h1 className="text-xl sm:text-2xl font-bold" style={{ color: 'var(--ink)' }}>تغيير كلمة المرور</h1>
+        <p className="text-xs mt-1" style={{ color: 'var(--ink-3)' }}>اختر كلمة مرور قوية</p>
+      </div>
+      <form onSubmit={submit} className="card p-5 sm:p-6 space-y-4">
+        {msg && (
+          <div className="p-3 rounded-xl flex items-start gap-2 text-[11px]"
+            style={msg.type === 'ok'
+              ? { background: 'rgba(8,145,178,0.10)', border: '1px solid rgba(8,145,178,0.25)', color: 'var(--success)' }
+              : { background: 'rgba(220,38,38,0.10)', border: '1px solid rgba(220,38,38,0.25)', color: 'var(--danger)' }}>
+            {msg.type === 'ok' ? <CheckCircle2 size={14} className="mt-0.5" /> : <AlertCircle size={14} className="mt-0.5" />}
+            <span className="font-semibold">{msg.text}</span>
+          </div>
+        )}
+        <div>
+          <label className="label block mb-2">كلمة المرور الحالية</label>
+          <input type={show ? 'text' : 'password'} required value={current} onChange={(e) => setCurrent(e.target.value)}
+            className="input" disabled={saving} />
+        </div>
+        <div>
+          <label className="label block mb-2">كلمة المرور الجديدة</label>
+          <div className="relative">
+            <input type={show ? 'text' : 'password'} required value={newPass} onChange={(e) => setNewPass(e.target.value)}
+              className="input pl-9" disabled={saving} />
+            <button type="button" onClick={() => setShow(!show)} className="absolute top-1/2 left-2 -translate-y-1/2 btn-icon"
+              style={{ width: '24px', height: '24px' }}>
+              {show ? <EyeOff size={13} /> : <Eye size={13} />}
+            </button>
+          </div>
+        </div>
+        <div>
+          <label className="label block mb-2">تأكيد كلمة المرور</label>
+          <input type={show ? 'text' : 'password'} required value={confirm} onChange={(e) => setConfirm(e.target.value)}
+            className="input" disabled={saving} />
+        </div>
+        <button type="submit" disabled={saving} className="btn btn-primary w-full h-10">
+          <ShieldCheck size={14} /> {saving ? 'جارٍ التحديث...' : 'تحديث كلمة المرور'}
+        </button>
+      </form>
+    </motion.div>
+  );
+}
+
+=== web/src/modules/auth/LoginPage.tsx ===
+import { useState } from 'react';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { Mail, Lock, Eye, EyeOff, AlertCircle, ArrowLeft } from 'lucide-react';
+import { supabase } from '@/core/supabase';
+import { LogoMark } from '@/shared/components/Logo';
+
+export default function LoginPage() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = (location.state as { from?: { pathname?: string } })?.from?.pathname || '/dashboard';
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+
+    try {
+      const { data, error: authError } = await supabase.auth.signInWithPassword({ email, password });
+      if (authError) throw authError;
+
+      const { data: factors } = await supabase.auth.mfa.listFactors();
+      const hasVerifiedFactor = factors?.totp?.some(f => f.status === 'verified');
+      if (hasVerifiedFactor) {
+        navigate('/auth/mfa', { state: { from }, replace: true });
+        return;
+      }
+
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('password_changed, mfa_setup_done')
+        .eq('id', data.user.id)
+        .single();
+
+      if (profile && !profile.password_changed) {
+        navigate('/auth/setup-account', { replace: true });
+        return;
+      }
+      if (profile && !profile.mfa_setup_done) {
+        navigate('/auth/mfa-setup', { replace: true });
+        return;
+      }
+
+      navigate(from, { replace: true });
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'حدث خطأ غير متوقع';
+      setError(msg === 'Invalid login credentials' ? 'البريد أو كلمة المرور غير صحيحة' : msg);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div className="min-h-[calc(100vh-220px)] flex items-center justify-center px-4 py-6">
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }} className="w-full max-w-md">
+        <div className="card p-6 sm:p-8 relative overflow-hidden">
+          <div className="absolute top-0 right-0 left-0 h-px pointer-events-none"
+            style={{ background: 'linear-gradient(90deg, transparent, var(--primary), transparent)', opacity: 0.6 }} />
+
+          <div className="flex flex-col items-center mb-6">
+            <LogoMark size={56} />
+            <h1 className="mt-4 text-xl sm:text-2xl font-extrabold" style={{ color: 'var(--ink)' }}>تسجيل الدخول</h1>
+            <p className="mt-1 text-xs text-center" style={{ color: 'var(--ink-3)' }}>أدخل بياناتك للوصول إلى نظام VEXORIS</p>
+          </div>
+
+          {error && (
+            <div className="mb-4 p-3 rounded-xl flex items-start gap-2 text-[11px] animate-scale-in"
+              style={{ background: 'rgba(220, 38, 38, 0.10)', border: '1px solid rgba(220, 38, 38, 0.25)', color: 'var(--danger)' }}>
+              <AlertCircle size={14} className="shrink-0 mt-0.5" /><span className="font-semibold">{error}</span>
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="label block mb-2">البريد الإلكتروني</label>
+              <div className="relative">
+                <Mail size={14} className="absolute top-1/2 right-3 -translate-y-1/2 pointer-events-none" style={{ color: 'var(--ink-4)' }} />
+                <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)}
+                  className="input pr-9" placeholder="name@vexoris.com" autoComplete="email" disabled={loading} />
+              </div>
+            </div>
+
+            <div>
+              <label className="label block mb-2">كلمة المرور</label>
+              <div className="relative">
+                <Lock size={14} className="absolute top-1/2 right-3 -translate-y-1/2 pointer-events-none" style={{ color: 'var(--ink-4)' }} />
+                <input type={showPassword ? 'text' : 'password'} required value={password}
+                  onChange={(e) => setPassword(e.target.value)} className="input px-9"
+                  placeholder="••••••••" autoComplete="current-password" disabled={loading} />
+                <button type="button" onClick={() => setShowPassword(!showPassword)}
+                  className="absolute top-1/2 left-2 -translate-y-1/2 btn-icon" style={{ width: '24px', height: '24px' }} tabIndex={-1}>
+                  {showPassword ? <EyeOff size={13} /> : <Eye size={13} />}
+                </button>
+              </div>
+            </div>
+
+            <button type="submit" disabled={loading} className="btn btn-primary w-full h-10 text-sm group">
+              {loading ? (<><span className="inline-block w-3.5 h-3.5 rounded-full border-2 border-white/30 border-t-white animate-spin" />جارٍ التحقق...</>)
+                : (<>دخول<ArrowLeft size={14} className="transition-transform group-hover:-translate-x-1" /></>)}
+            </button>
+          </form>
+
+          <div className="mt-5 pt-4 border-t text-center text-[11px]" style={{ borderColor: 'var(--line)', color: 'var(--ink-3)' }}>
+            نسيت كلمة المرور؟ <a href="mailto:admin@vexoris.com" className="font-bold" style={{ color: 'var(--primary)' }}>تواصل مع مسؤول النظام</a>
+          </div>
+        </div>
+
+        <div className="mt-4 text-center text-[10.5px]" style={{ color: 'var(--ink-4)' }}>
+          <Link to="/" className="hover:underline">← العودة للرئيسية</Link>
+        </div>
+      </motion.div>
+    </div>
+  );
+}
+
+=== web/src/modules/auth/MfaSetupPage.tsx ===
+import { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { ShieldCheck, AlertCircle, Copy, Check, ArrowRight } from 'lucide-react';
+import { supabase } from '@/core/supabase';
+import { useAuth } from '@/core/auth';
+import { FullPageLoading } from '@/shared/components/Loading';
+
+const REQUIRED_MFA = ['super_admin', 'admin', 'manager'];
+
+export default function MfaSetupPage() {
+  const navigate = useNavigate();
+  const { user, profile, loading } = useAuth();
+  const [factorId, setFactorId] = useState('');
+  const [qrCode, setQrCode] = useState('');
+  const [secret, setSecret] = useState('');
+  const [code, setCode] = useState(['', '', '', '', '', '']);
+  const [error, setError] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+  const [ready, setReady] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const inputsRef = useRef<(HTMLInputElement | null)[]>([]);
+
+  const role = profile?.role || 'viewer';
+  const requiresMfa = REQUIRED_MFA.includes(role);
+
+  useEffect(() => {
+    (async () => {
+      if (!user) return;
+      const { data } = await supabase.from('profiles').select('mfa_setup_done').eq('id', user.id).single();
+      if (data?.mfa_setup_done) { navigate('/dashboard', { replace: true }); return; }
+      const { data: factors } = await supabase.auth.mfa.listFactors();
+      for (const f of factors?.totp || []) {
+        if (f.status === 'verified') { navigate('/dashboard', { replace: true }); return; }
+        await supabase.auth.mfa.unenroll({ factorId: f.id }).catch(() => {});
+      }
+      const { data: enroll, error: eErr } = await supabase.auth.mfa.enroll({ factorType: 'totp', friendlyName: 'VEXORIS' });
+      if (eErr || !enroll) { setError(eErr?.message || 'فشل إنشاء عامل MFA'); return; }
+      setFactorId(enroll.id); setQrCode(enroll.totp.qr_code); setSecret(enroll.totp.secret); setReady(true);
+    })();
+  }, [user, navigate]);
+
+  function handleChange(i: number, val: string) {
+    if (!/^\d?$/.test(val)) return;
+    const arr = [...code]; arr[i] = val; setCode(arr);
+    if (val && i < 5) inputsRef.current[i + 1]?.focus();
+    if (arr.every(c => c)) verify(arr.join(''));
+  }
+
+  async function verify(full: string) {
+    setError(''); setSubmitting(true);
+    try {
+      const { data: ch, error: chErr } = await supabase.auth.mfa.challenge({ factorId });
+      if (chErr) throw chErr;
+      const { error: vErr } = await supabase.auth.mfa.verify({ factorId, challengeId: ch.id, code: full });
+      if (vErr) throw vErr;
+      await supabase.from('profiles').update({ mfa_setup_done: true }).eq('id', user!.id);
+      navigate('/dashboard', { replace: true });
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'الرمز غير صحيح';
+      setError(msg === 'Invalid TOTP code entered' ? 'الرمز غير صحيح' : msg);
+      setCode(['', '', '', '', '', '']); inputsRef.current[0]?.focus();
+    } finally { setSubmitting(false); }
+  }
+
+  async function skip() {
+    if (factorId) await supabase.auth.mfa.unenroll({ factorId }).catch(() => {});
+    navigate('/dashboard', { replace: true });
+  }
+
+  function copySecret() { navigator.clipboard.writeText(secret); setCopied(true); setTimeout(() => setCopied(false), 2000); }
+
+  if (loading || !ready) return <FullPageLoading label="جارٍ إعداد MFA..." />;
+
+  return (
+    <div className="min-h-[calc(100vh-220px)] flex items-center justify-center px-4 py-6">
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-lg">
+        <div className="card p-6 sm:p-8">
+          <div className="flex flex-col items-center mb-6">
+            <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-4"
+              style={{ background: 'var(--primary-soft)', color: 'var(--primary)',
+                boxShadow: 'inset 0 0 0 1px color-mix(in srgb, var(--primary) 30%, transparent)' }}>
+              <ShieldCheck size={26} />
+            </div>
+            <h1 className="text-xl font-extrabold" style={{ color: 'var(--ink)' }}>التحقق الثنائي</h1>
+            <p className="mt-1 text-xs text-center" style={{ color: 'var(--ink-3)' }}>امسح الرمز بتطبيق Google Authenticator</p>
+          </div>
+
+          {error && (
+            <div className="mb-4 p-3 rounded-xl flex items-start gap-2 text-[11px]"
+              style={{ background: 'rgba(220,38,38,0.10)', border: '1px solid rgba(220,38,38,0.25)', color: 'var(--danger)' }}>
+              <AlertCircle size={14} className="shrink-0 mt-0.5" /><span className="font-semibold">{error}</span>
+            </div>
+          )}
+
+          <div className="flex justify-center mb-5">
+            <div className="p-3 rounded-xl" style={{ background: '#fff' }}>
+              <img src={qrCode} alt="QR" className="w-40 h-40 block" />
+            </div>
+          </div>
+
+          <div className="mb-5">
+            <div className="label mb-2">أو أدخل الرمز يدوياً</div>
+            <div className="flex items-center gap-2">
+              <code className="flex-1 p-2.5 rounded-lg text-[11px] font-mono break-all"
+                style={{ background: 'var(--bg-2)', border: '1px solid var(--line)', color: 'var(--ink)' }}>{secret}</code>
+              <button type="button" onClick={copySecret} className="btn btn-secondary h-9 px-3">
+                {copied ? <Check size={14} /> : <Copy size={14} />}
+              </button>
+            </div>
+          </div>
+
+          <div className="label mb-2">أدخل الرمز المكوّن من 6 أرقام</div>
+          <div className="flex justify-center gap-1.5 mb-4" dir="ltr">
+            {code.map((d, i) => (
+              <input key={i} ref={el => { inputsRef.current[i] = el; }} type="text" inputMode="numeric" maxLength={1}
+                value={d} onChange={(e) => handleChange(i, e.target.value)} d
+=== web/src/modules/auth/MfaVerifyPage.tsx ===
+import { useState, useRef, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { ShieldCheck, AlertCircle } from 'lucide-react';
+import { supabase } from '@/core/supabase';
+
+export default function MfaVerifyPage() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = (location.state as { from?: string })?.from || '/dashboard';
+
+  const [code, setCode] = useState(['', '', '', '', '', '']);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const inputsRef = useRef<(HTMLInputElement | null)[]>([]);
+
+  useEffect(() => { inputsRef.current[0]?.focus(); }, []);
+
+  function handleChange(index: number, value: string) {
+    if (!/^\d?$/.test(value)) return;
+    const newCode = [...code]; newCode[index] = value; setCode(newCode);
+    if (value && index < 5) inputsRef.current[index + 1]?.focus();
+    if (newCode.every(c => c)) verify(newCode.join(''));
+  }
+
+  function handleKeyDown(index: number, e: React.KeyboardEvent<HTMLInputElement>) {
+    if (e.key === 'Backspace' && !code[index] && index > 0) inputsRef.current[index - 1]?.focus();
+  }
+
+  function handlePaste(e: React.ClipboardEvent) {
+    e.preventDefault();
+    const pasted = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 6);
+    if (pasted.length === 6) { setCode(pasted.split('')); verify(pasted); }
+  }
+
+  async function verify(fullCode: string) {
+    setError(''); setLoading(true);
+    try {
+      const { data: factors } = await supabase.auth.mfa.listFactors();
+      const totp = factors?.totp?.find(f => f.status === 'verified');
+      if (!totp) throw new Error('لا يوجد عامل MFA مفعّل على حسابك');
+      const { data: challenge, error: challengeErr } = await supabase.auth.mfa.challenge({ factorId: totp.id });
+      if (challengeErr) throw challengeErr;
+      const { error: verifyErr } = await supabase.auth.mfa.verify({ factorId: totp.id, challengeId: challenge.id, code: fullCode });
+      if (verifyErr) throw verifyErr;
+      navigate(from, { replace: true });
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'الرمز غير صحيح';
+      setError(msg === 'Invalid TOTP code entered' ? 'الرمز غير صحيح. حاول مرة أخرى.' : msg);
+      setCode(['', '', '', '', '', '']); inputsRef.current[0]?.focus();
+    } finally { setLoading(false); }
+  }
+
+  return (
+    <div className="min-h-[calc(100vh-220px)] flex items-center justify-center px-4 py-6">
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }} className="w-full max-w-md">
+        <div className="card p-6 sm:p-8">
+          <div className="flex flex-col items-center mb-6">
+            <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-4"
+              style={{ background: 'color-mix(in srgb, var(--primary) 15%, transparent)', color: 'var(--primary)',
+                boxShadow: 'inset 0 0 0 1px color-mix(in srgb, var(--primary) 30%, transparent), 0 8px 24px -8px var(--primary-glow)' }}>
+              <ShieldCheck size={26} />
+            </div>
+            <h1 className="text-xl font-extrabold" style={{ color: 'var(--ink)' }}>التحقق الثنائي</h1>
+            <p className="mt-1 text-xs text-center" style={{ color: 'var(--ink-3)' }}>أدخل الرمز المكوّن من 6 أرقام</p>
+          </div>
+
+          {error && (
+            <div className="mb-4 p-3 rounded-xl flex items-start gap-2 text-[11px]"
+              style={{ background: 'rgba(220, 38, 38, 0.10)', border: '1px solid rgba(220, 38, 38, 0.25)', color: 'var(--danger)' }}>
+              <AlertCircle size={14} className="shrink-0 mt-0.5" /><span className="font-semibold">{error}</span>
+            </div>
+          )}
+
+          <div className="flex justify-center gap-1.5 sm:gap-2 mb-6" dir="ltr" onPaste={handlePaste}>
+            {code.map((digit, i) => (
+              <input key={i} ref={el => { inputsRef.current[i] = el; }} type="text" inputMode="numeric" maxLength={1}
+                value={digit} onChange={(e) => handleChange(i, e.target.value)}
+                onKeyDown={(e) => handleKeyDown(i, e)} disabled={loading}
+                className="w-10 h-12 sm:w-11 text-center text-lg font-bold rounded-xl outline-none transition-all"
+                style={{ background: 'var(--bg-2)',
+                  border: digit ? '1.5px solid var(--primary)' : '1px solid var(--line)',
+                  color: 'var(--ink)', boxShadow: digit ? '0 0 0 3px var(--primary-soft)' : 'none' }} />
+            ))}
+          </div>
+
+          {loading && <div className="text-center text-xs font-semibold" style={{ color: 'var(--primary)' }}>جارٍ التحقق...</div>}
+          <div className="text-center text-[11px] mt-2" style={{ color: 'var(--ink-3)' }}>
+            لم تستلم الرمز؟ تحقق من تطبيق المصادقة.
+          </div>
+        </div>
+      </motion.div>
+    </div>
+  );
+}
+
+=== web/src/modules/auth/ProfilePage.tsx ===
+import { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
+import { Save, Mail, Shield, Building2, User, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { supabase } from '@/core/supabase';
+import { useAuth } from '@/core/auth';
+
+const ROLE_LABEL: Record<string, string> = {
+  super_admin: 'المطور', admin: 'إدارة السجلات', manager: 'المدير الطبي',
+  auditor: 'مراجع جودة', senior: 'رئيس قسم', doctor: 'طبيب',
+  reviewer_doctor: 'طبيب مراجع', viewer: 'مراجع',
+};
+
+export default function ProfilePage() {
+  const { user, profile } = useAuth();
+  const [displayName, setDisplayName] = useState('');
+  const [department, setDepartment] = useState('');
+  const [saving, setSaving] = useState(false);
+  const [msg, setMsg] = useState<{ type: 'ok' | 'err'; text: string } | null>(null);
+
+  useEffect(() => {
+    if (profile) {
+      setDisplayName(profile.display_name || '');
+      setDepartment(profile.department || '');
+    }
+  }, [profile]);
+
+  async function save() {
+    if (!user) return;
+    setSaving(true); setMsg(null);
+    try {
+      const { error } = await supabase.from('profiles').update({
+        display_name: displayName.trim() || null,
+        department: department.trim() || null,
+      }).eq('id', user.id);
+      if (error) throw error;
+      setMsg({ type: 'ok', text: 'تم الحفظ بنجاح' });
+    } catch (err: unknown) {
+      setMsg({ type: 'err', text: err instanceof Error ? err.message : 'فشل الحفظ' });
+    } finally { setSaving(false); }
+  }
+
+  const initial = (displayName || profile?.username || 'U').charAt(0).toUpperCase();
+  const role = profile?.role || 'viewer';
+
+  return (
+    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-4 max-w-3xl">
+      <div>
+        <h1 className="text-xl sm:text-2xl font-bold" style={{ color: 'var(--ink)' }}>إدارة الحساب</h1>
+        <p className="text-xs mt-1" style={{ color: 'var(--ink-3)' }}>تحديث معلوماتك الشخصية</p>
+      </div>
+
+      <div className="card p-5 sm:p-6">
+        <div className="flex items-center gap-4 mb-6 pb-6 border-b" style={{ borderColor: 'var(--line)' }}>
+          <div className="w-16 h-16 rounded-2xl flex items-center justify-center text-white text-2xl font-extrabold shrink-0"
+            style={{ background: 'linear-gradient(135deg, var(--grad-from), var(--grad-to))', boxShadow: '0 8px 24px -6px var(--primary-glow)' }}>
+            {initial}
+          </div>
+          <div className="min-w-0">
+            <div className="text-base font-bold truncate" style={{ color: 'var(--ink)' }}>{displayName || profile?.username}</div>
+            <div className="text-xs mt-1 truncate" style={{ color: 'var(--ink-3)' }}>{user?.email}</div>
+            <div className="mt-1.5 inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-md"
+              style={{ background: 'var(--primary-soft)', color: 'var(--primary)' }}>
+              <Shield size={10} />{ROLE_LABEL[role] || role}
+            </div>
+          </div>
+        </div>
+
+        {msg && (
+          <div className="mb-4 p-3 rounded-xl flex items-start gap-2 text-[11px]"
+            style={msg.type === 'ok'
+              ? { background: 'rgba(8,145,178,0.10)', border: '1px solid rgba(8,145,178,0.25)', color: 'var(--success)' }
+              : { background: 'rgba(220,38,38,0.10)', border: '1px solid rgba(220,38,38,0.25)', color: 'var(--danger)' }}>
+            {msg.type === 'ok' ? <CheckCircle2 size={14} className="mt-0.5" /> : <AlertCircle size={14} className="mt-0.5" />}
+            <span className="font-semibold">{msg.text}</span>
+          </div>
+        )}
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label className="label block mb-2 flex items-center gap-1"><User size={11} /> الاسم الكامل</label>
+            <input type="text" value={displayName} onChange={(e) => setDisplayName(e.target.value)}
+              className="input" placeholder="اسمك الكامل" disabled={saving} />
+          </div>
+          <div>
+            <label className="label block mb-2 flex items-center gap-1"><Building2 size={11} /> القسم</label>
+            <input type="text" value={department} onChange={(e) => setDepartment(e.target.value)}
+              className="input" placeholder="مثال: إدارة الجودة" disabled={saving} />
+          </div>
+          <div>
+            <label className="label block mb-2 flex items-center gap-1"><Mail size={11} /> البريد الإلكتروني</label>
+            <input type="email" value={user?.email || ''} readOnly className="input opacity-60 cursor-not-allowed" />
+          </div>
+          <div>
+            <label className="label block mb-2 flex items-center gap-1"><Shield size={11} /> الدور</label>
+            <input type="text" value={ROLE_LABEL[role] || role} readOnly className="input opacity-60 cursor-not-allowed" />
+          </div>
+        </div>
+
+        <div className="mt-6 pt-4 border-t flex justify-end" style={{ borderColor: 'var(--line)' }}>
+          <button onClick={save} disabled={saving} className="btn btn-primary h-9 px-5">
+            <Save size={13} /> {saving ? 'جارٍ الحفظ...' : 'حفظ التغييرات'}
+          </button>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+=== web/src/modules/auth/ProtectedRoute.tsx ===
+import { Navigate, Outlet, useLocation } from 'react-router-dom';
+import { useAuth } from '@/core/auth';
+import { FullPageLoading } from '@/shared/components/Loading';
+
+interface ProtectedRouteProps {
+  allowedRoles?: string[];
+}
+
+export function ProtectedRoute({ allowedRoles }: ProtectedRouteProps = {}) {
+  const { user, profile, loading } = useAuth();
+  const location = useLocation();
+
+  if (loading) {
+    return <FullPageLoading label="جارٍ التحقق من الجلسة..." />;
+  }
+
+  if (!user) {
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+
+  if (allowedRoles && profile && !allowedRoles.includes(profile.role)) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  return <Outlet />;
+}
+
+=== web/src/modules/auth/SessionsPage.tsx ===
+import { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
+import { Monitor, Smartphone, Globe, Clock, LogOut, AlertCircle, Activity } from 'lucide-react';
+import { supabase } from '@/core/supabase';
+import { useAuth } from '@/core/auth';
+
+interface SessionRow {
+  id: string;
+  device_label: string | null;
+  user_agent: string | null;
+  ip_address: string | null;
+  created_at: string;
+  last_active_at: string;
+  is_current: boolean;
+}
+
+function detectDevice(ua: string | null): { icon: 'mobile' | 'desktop'; label: string } {
+  if (!ua) return { icon: 'desktop', label: 'جهاز غير معروف' };
+  if (/mobile|android|iphone|ipad/i.test(ua)) return { icon: 'mobile', label: 'جهاز محمول' };
+  return { icon: 'desktop', label: 'حاسوب' };
+}
+
+function fmt(dt: string) {
+  return new Date(dt).toLocaleString('ar-EG', { dateStyle: 'short', timeStyle: 'short' });
+}
+
+export default function SessionsPage() {
+  const { user, signOut } = useAuth();
+  const [rows, setRows] = useState<SessionRow[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [err, setErr] = useState('');
+
+  async function load() {
+    if (!user) return;
+    setLoading(true);
+    setErr('');
+    const { data, error } = await supabase.rpc('get_my_sessions');
+    if (error) setErr(error.message);
+    else setRows((data || []) as SessionRow[]);
+    setLoading(false);
+  }
+
+  useEffect(() => {
+    void load();
+  }, [user]);
+
+  async function endSession(id: string) {
+    const { error } = await supabase.rpc('kill_session', { p_session_id: id });
+    if (!error) setRows((r) => r.filter((x) => x.id !== id));
+    else setErr(error.message);
+  }
+
+  return (
+    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-4 max-w-4xl">
+      <div className="flex items-start justify-between gap-3 flex-wrap">
+        <div>
+          <h1 className="text-xl sm:text-2xl font-bold" style={{ color: 'var(--ink)' }}>الجلسات النشطة</h1>
+          <p className="text-xs mt-1" style={{ color: 'var(--ink-3)' }}>الأجهزة المتصلة بحسابك</p>
+        </div>
+        <button onClick={() => signOut()} className="btn btn-secondary h-9 text-xs">
+          <LogOut size={13} /> تسجيل الخروج من الكل
+        </button>
+      </div>
+
+      {err && (
+        <div className="card p-3 flex items-start gap-2 text-[11px]" style={{ color: 'var(--danger)' }}>
+          <AlertCircle size={14} />{err}
+        </div>
+      )}
+
+      {loading ? (
+        <div className="card p-8 text-center text-xs" style={{ color: 'var(--ink-3)' }}>جارٍ التحميل...</div>
+      ) : rows.length === 0 ? (
+        <div className="card p-8 text-center">
+          <div className="w-12 h-12 mx-auto mb-3 rounded-xl flex items-center justify-center"
+            style={{ background: 'var(--primary-soft)', color: 'var(--primary)' }}>
+            <Activity size={22} />
+          </div>
+          <h3 className="text-sm font-bold mb-1" style={{ color: 'var(--ink)' }}>لا توجد جلسات مسجّلة</h3>
+          <p className="text-xs" style={{ color: 'var(--ink-3)' }}>سيتم تسجيل جهازك الحالي عند أول تحقق.</p>
+        </div>
+      ) : (
+        <div className="space-y-2">
+          {rows.map((r) => {
+            const dev = detectDevice(r.user_agent);
+            const Icon = dev.icon === 'mobile' ? Smartphone : Monitor;
+            return (
+              <div key={r.id} className="card p-4 flex items-center gap-3 flex-wrap">
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
+                  style={{ background: 'var(--primary-soft)', color: 'var(--primary)' }}>
+                  <Icon size={18} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-sm font-bold flex items-center gap-2" style={{ color: 'var(--ink)' }}>
+                    {r.device_label || dev.label}
+                    {r.is_current && (
+                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded"
+                        style={{ background: 'var(--primary-soft)', color: 'var(--primary)' }}>
+                        الحالي
+                      </span>
+                    )}
+                  </div>
+                  <div className="text-[10.5px] mt-0.5 flex items-center gap-2 flex-wrap" style={{ color: 'var(--ink-3)' }}>
+                    <span className="inline-flex items-center gap-1"><Globe size={10} />{r.ip_address || '—'}</span>
+                    <span className="inline-flex items-center gap-1"><Clock size={10} />{fmt(r.last_active_at)}</span>
+                  </div>
+                </div>
+                {!r.is_current && (
+                  <button onClick={() => endSession(r.id)} className="btn btn-ghost h-8 text-[11px]" style={{ color: 'var(--danger)' }}>
+                    <LogOut size={12} /> إنهاء
+                  </button>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </motion.div>
+  );
+}
+
+=== web/src/modules/auth/SetupAccountPage.tsx ===
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { Lock, AlertCircle, ArrowLeft } from 'lucide-react';
+import { supabase } from '@/core/supabase';
+import { useAuth } from '@/core/auth';
+import { FullPageLoading } from '@/shared/components/Loading';
+
+function strength(pass: string) {
+  let s = 0;
+  if (pass.length >= 8) s++;
+  if (/[A-Z]/.test(pass)) s++;
+  if (/[0-9]/.test(pass)) s++;
+  if (/[^A-Za-z0-9]/.test(pass)) s++;
+  const cfg = [
+    { label: 'ضعيفة جداً', color: 'var(--danger)' }, { label: 'ضعيفة', color: 'var(--warning)' },
+    { label: 'متوسطة', color: 'var(--info)' }, { label: 'قوية', color: 'var(--primary)' },
+  ];
+  return { score: s, ...(cfg[Math.max(0, Math.min(s - 1, 3))]) };
+}
+
+export default function SetupAccountPage() {
+  const navigate = useNavigate();
+  const { user, loading } = useAuth();
+  const [pass, setPass] = useState('');
+  const [confirm, setConfirm] = useState('');
+  const [error, setError] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+  const [checking, setChecking] = useState(true);
+
+  useEffect(() => {
+    (async () => {
+      if (!user) return;
+      const { data } = await supabase.from('profiles').select('password_changed').eq('id', user.id).single();
+      if (data?.password_changed) navigate('/dashboard', { replace: true });
+      else setChecking(false);
+    })();
+  }, [user, navigate]);
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault(); setError('');
+    if (pass.length < 8) return setError('كلمة المرور يجب أن تكون 8 أحرف على الأقل');
+    if (pass !== confirm) return setError('كلمتا المرور غير متطابقتين');
+    setSubmitting(true);
+    try {
+      const { error: updErr } = await supabase.auth.updateUser({ password: pass });
+      if (updErr) throw updErr;
+      const { error: profErr } = await supabase.from('profiles').update({ password_changed: true }).eq('id', user!.id);
+      if (profErr) throw profErr;
+      navigate('/auth/mfa-setup', { replace: true });
+    } catch (err: unknown) { setError(err instanceof Error ? err.message : 'خطأ غير متوقع'); }
+    finally { setSubmitting(false); }
+  }
+
+  if (loading || checking) return <FullPageLoading label="جارٍ التحقق..." />;
+  const s = strength(pass);
+
+  return (
+    <div className="min-h-[calc(100vh-220px)] flex items-center justify-center px-4 py-6">
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-md">
+        <div className="card p-6 sm:p-8">
+          <div className="flex flex-col items-center mb-6">
+            <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-4"
+              style={{ background: 'var(--primary-soft)', color: 'var(--primary)',
+                boxShadow: 'inset 0 0 0 1px color-mix(in srgb, var(--primary) 30%, transparent)' }}>
+              <Lock size={24} />
+            </div>
+            <h1 className="text-xl font-extrabold" style={{ color: 'var(--ink)' }}>تأمين حسابك</h1>
+            <p className="mt-1 text-xs text-center" style={{ color: 'var(--ink-3)' }}>عيّن كلمة مرور جديدة قبل المتابعة</p>
+          </div>
+
+          {error && (
+            <div className="mb-4 p-3 rounded-xl flex items-start gap-2 text-[11px]"
+              style={{ background: 'rgba(220,38,38,0.10)', border: '1px solid rgba(220,38,38,0.25)', color: 'var(--danger)' }}>
+              <AlertCircle size={14} className="shrink-0 mt-0.5" /><span className="font-semibold">{error}</span>
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="label block mb-2">كلمة المرور الجديدة</label>
+              <input type="password" required value={pass} onChange={(e) => setPass(e.target.value)}
+                className="input" placeholder="8 أحرف على الأقل" disabled={submitting} />
+              <div className="mt-2 h-1 rounded-full overflow-hidden" style={{ background: 'var(--surface-2)' }}>
+                <div className="h-full rounded-full transition-all duration-300" style={{ width: `${(s.score / 4) * 100}%`, background: s.color }} />
+              </div>
+              <div className="text-[10.5px] mt-1 font-semibold" style={{ color: s.color }}>{s.label}</div>
+            </div>
+            <div>
+              <label className="label block mb-2">تأكيد كلمة المرور</label>
+              <input type="password" required value={confirm} onChange={(e) => setConfirm(e.target.value)}
+                className="input" placeholder="أعد الإدخال" disabled={submitting} />
+            </div>
+            <button type="submit" disabled={submitting} className="btn btn-primary w-full h-10 text-sm">
+              {submitting ? 'جارٍ الحفظ...' : 'حفظ ومتابعة'} <ArrowLeft size={14} />
+            </button>
+          </form>
+        </div>
+      </motion.div>
+    </div>
+  );
+}
+
+=== web/src/modules/dashboard/Dashboard.tsx ===
+cd /workspaces/Vexoris && \
+git add -A && \
+git status && \
+git commit -m "feat: full auth module + Aurora Sky design + Cloudflare deployment ready" && \
+git push origin main
+
+
+=== web/src/modules/dashboard/Home.tsx ===
+import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import {
+  ArrowLeft, Shield, BarChart3, Activity, Stethoscope,
+  Lock, Zap, Sparkles, TrendingUp
+} from 'lucide-react';
+import { LogoMark } from '@/shared/components/Logo';
+
+const container = {
+  hidden: { opacity: 0 },
+  show: { opacity: 1, transition: { staggerChildren: 0.06, delayChildren: 0.1 } },
+};
+
+const item = {
+  hidden: { opacity: 0, y: 12 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] as const } },
+};
+
+export default function Home() {
+  return (
+    <motion.div
+      variants={container}
+      initial="hidden"
+      animate="show"
+      className="space-y-10 max-w-5xl mx-auto"
+    >
+      {/* Hero */}
+      <motion.section variants={item} className="pt-4">
+        <div
+          className="inline-flex items-center gap-2 h-7 px-2.5 rounded-full border text-[10.5px] font-bold mb-6"
+          style={{
+            background: 'var(--surface)',
+            borderColor: 'var(--line)',
+            color: 'var(--ink-3)',
+            boxShadow: '0 1px 2px rgba(0,0,0,0.03)',
+          }}
+        >
+          <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: 'var(--primary)' }} />
+          <Sparkles size={11} style={{ color: 'var(--primary)' }} />
+          Aurora Obsidian — الإصدار الثالث
+        </div>
+
+        <div className="flex items-start gap-4 mb-6">
+          <LogoMark size={64} />
+          <div>
+            <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight leading-[1.05] mb-2" style={{ color: 'var(--ink)' }}>
+              <span className="text-gradient">VEXORIS</span>
+            </h1>
+            <p className="text-lg font-bold" style={{ color: 'var(--ink-3)' }}>
+              نظام إدارة السجلات الطبية والمراجعة
+            </p>
+          </div>
+        </div>
+
+        <p className="text-md font-medium leading-relaxed max-w-2xl mb-8" style={{ color: 'var(--ink-2)' }}>
+          منصة ERP متكاملة لمراجعة الملفات الطبية، تدقيق نماذج الطوارئ، وتحليل المؤشرات الإحصائية — بأمان مؤسسي وصلاحيات متعددة الأدوار.
+        </p>
+
+        <div className="flex items-center gap-2">
+          <Link to="/login" className="btn btn-primary h-10 px-5 text-sm group">
+            ابدأ الآن
+            <ArrowLeft size={14} className="transition-transform group-hover:-translate-x-1" />
+          </Link>
+          <Link to="/about" className="btn btn-secondary h-10 px-5 text-sm">
+            عن النظام
+          </Link>
+        </div>
+      </motion.section>
+
+      {/* Metrics strip */}
+      <motion.section
+        variants={item}
+        className="grid grid-cols-2 md:grid-cols-4 gap-2"
+      >
+        {[
+          { label: 'ملف طبي', value: '12,847', trend: '+8.2%', icon: Activity,     accent: 'var(--primary)' },
+          { label: 'مراجعة يومية', value: '856', trend: '+3.1%', icon: BarChart3,   accent: '#0284c7' },
+          { label: 'مستخدم نشط', value: '142',  trend: '+12',   icon: Shield,      accent: '#7c3aed' },
+          { label: 'دقة المراجعة', value: '99.2%', trend: '+0.4%', icon: TrendingUp, accent: '#0d9488' },
+        ].map((s, i) => (
+          <div
+            key={s.label}
+            className="card p-4 group cursor-default"
+            style={{ transitionDelay: `${i * 40}ms` }}
+          >
+            <div className="flex items-center justify-between mb-2.5">
+              <div
+                className="w-7 h-7 rounded-md flex items-center justify-center"
+                style={{
+                  background: `color-mix(in srgb, ${s.accent} 12%, transparent)`,
+                  color: s.accent,
+                }}
+              >
+                <s.icon size={14} />
+              </div>
+              <span className="text-[10px] font-bold" style={{ color: 'var(--primary)' }}>{s.trend}</span>
+            </div>
+            <div className="label mb-0.5">{s.label}</div>
+            <div className="text-xl font-bold tabular" style={{ color: 'var(--ink)' }}>{s.value}</div>
+          </div>
+        ))}
+      </motion.section>
+
+      {/* Features with color variety */}
+      <motion.section variants={item}>
+        <div className="mb-5">
+          <h2 className="text-xl font-bold mb-1" style={{ color: 'var(--ink)' }}>قدرات المنصة</h2>
+          <p className="text-sm" style={{ color: 'var(--ink-3)' }}>مبنية لتناسب المستشفيات والمراكز الطبية الكبرى</p>
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-3">
+          {[
+            { icon: Stethoscope, title: 'مراجعة طبية متقدمة', desc: 'تدقيق النماذج الطبية طبقاً لتعليمات الجودة المعتمدة', accent: 'var(--primary)' },
+            { icon: BarChart3,   title: 'تحليلات فورية',      desc: 'مؤشرات لحظية وتقارير تفاعلية دقيقة',                  accent: '#0284c7' },
+            { icon: Lock,        title: 'أمان مؤسسي',         desc: 'تشفير كامل + Row Level Security على مستوى القاعدة',   accent: '#7c3aed' },
+            { icon: Zap,         title: 'أداء عالي',          desc: 'استعلامات محسّنة + Materialized Views للتقارير',       accent: '#d97706' },
+          ].map((f) => (
+            <div key={f.title} className="card card-hover p-4 group">
+              <div
+                className="w-10 h-10 rounded-lg flex items-center justify-center mb-3
+                           transition-all duration-300 group-hover:scale-110 group-hover:rotate-3"
+                style={{
+                  background: `color-mix(in srgb, ${f.accent} 12%, transparent)`,
+                  color: f.accent,
+                  boxShadow: `inset 0 0 0 1px color-mix(in srgb, ${f.accent} 25%
+=== web/src/shared/components/FontSizeControl.tsx ===
+import { useState } from 'react';
+import { Minus, Plus } from 'lucide-react';
+
+const MIN_SIZE = 12;
+const MAX_SIZE = 20;
+const STEP = 2;
+
+function applyFontSize(px: number) {
+  document.documentElement.style.setProperty('--base-font-size', `${px}px`);
+  localStorage.setItem('vex-font-size', String(px));
+}
+
+export function FontSizeControl() {
+  const [size, setSize] = useState(() => {
+    const saved = Number(localStorage.getItem('vex-font-size') || 14);
+    return Math.max(MIN_SIZE, Math.min(MAX_SIZE, saved));
+  });
+
+  function change(delta: number) {
+    const next = Math.max(MIN_SIZE, Math.min(MAX_SIZE, size + delta));
+    setSize(next);
+    applyFontSize(next);
+  }
+
+  const canDecrease = size > MIN_SIZE;
+  const canIncrease = size < MAX_SIZE;
+
+  return (
+    <div
+      className="flex items-center h-7 rounded-lg border overflow-hidden transition-colors"
+      style={{
+        background: 'var(--surface-2)',
+        borderColor: 'var(--line)',
+      }}
+    >
+      {/* Aa label */}
+      <span
+        className="px-1.5 text-[10px] font-bold select-none"
+        style={{ color: 'var(--ink-3)' }}
+        title={`حجم الخط الحالي: ${size}px`}
+      >
+        Aa
+      </span>
+
+      <div className="w-px h-4" style={{ background: 'var(--line)' }} />
+
+      {/* Decrease */}
+      <button
+        type="button"
+        onClick={() => change(-STEP)}
+        disabled={!canDecrease}
+        className="w-6 h-full flex items-center justify-center transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+        style={{ color: 'var(--ink-2)' }}
+        onMouseEnter={(e) => {
+          if (canDecrease) (e.currentTarget as HTMLElement).style.background = 'var(--surface-3)';
+        }}
+        onMouseLeave={(e) => {
+          (e.currentTarget as HTMLElement).style.background = 'transparent';
+        }}
+        title="تصغير الخط"
+        aria-label="تصغير الخط"
+      >
+        <Minus size={11} strokeWidth={3} />
+      </button>
+
+      <div className="w-px h-4" style={{ background: 'var(--line)' }} />
+
+      {/* Increase */}
+      <button
+        type="button"
+        onClick={() => change(STEP)}
+        disabled={!canIncrease}
+        className="w-6 h-full flex items-center justify-center transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+        style={{ color: 'var(--ink-2)' }}
+        onMouseEnter={(e) => {
+          if (canIncrease) (e.currentTarget as HTMLElement).style.background = 'var(--surface-3)';
+        }}
+        onMouseLeave={(e) => {
+          (e.currentTarget as HTMLElement).style.background = 'transparent';
+        }}
+        title="تكبير الخط"
+        aria-label="تكبير الخط"
+      >
+        <Plus size={11} strokeWidth={3} />
+      </button>
+    </div>
+  );
+}
+
+export function initFontSize() {
+  const saved = Number(localStorage.getItem('vex-font-size') || 14);
+  applyFontSize(saved);
+}
+
+=== web/src/shared/components/Footer.tsx ===
+import { Activity, Sparkles, Copyright } from 'lucide-react';
+
+interface FooterProps {
+  variant?: 'public' | 'workspace';
+}
+
+export function Footer({ variant = 'public' }: FooterProps) {
+  return (
+    <footer className={`app-footer-floating ${variant}`}>
+      <div
+        className="mx-auto max-w-[1120px] h-14 px-3 rounded-[20px]
+                   flex items-center justify-between gap-2
+                   border relative overflow-hidden"
+        style={{
+          background: 'var(--glass)',
+          borderColor: 'var(--line)',
+          backdropFilter: 'blur(20px) saturate(200%)',
+          WebkitBackdropFilter: 'blur(20px) saturate(200%)',
+          boxShadow:
+            '0 1px 2px rgba(0,0,0,0.04), 0 4px 8px rgba(0,0,0,0.03), 0 16px 40px -8px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.06)',
+        }}
+      >
+        {/* Top gradient glow line */}
+        <div
+          className="absolute top-0 right-0 left-0 h-px pointer-events-none"
+          style={{
+            background: 'linear-gradient(90deg, transparent, var(--grad-from), var(--primary), var(--grad-to), transparent)',
+            opacity: 0.6,
+          }}
+        />
+
+        {/* Ambient corner glows */}
+        <div
+          className="absolute -top-16 -right-16 w-32 h-32 rounded-full blur-3xl pointer-events-none"
+          style={{ background: 'var(--primary-glow)', opacity: 0.30 }}
+        />
+        <div
+          className="absolute -bottom-16 -left-16 w-32 h-32 rounded-full blur-3xl pointer-events-none"
+          style={{ background: 'rgba(56, 189, 248, 0.15)', opacity: 0.30 }}
+        />
+
+        {/* ═══ Brand (left) ═══ */}
+        <div className="flex items-center gap-2 shrink-0 relative">
+          <span
+            className="inline-flex items-center justify-center w-6 h-6 rounded-lg shrink-0"
+            style={{
+              background: 'linear-gradient(135deg, var(--grad-from), var(--grad-to))',
+              boxShadow: '0 2px 6px -1px var(--primary-glow)',
+            }}
+          >
+            <Activity size={12} color="#fff" strokeWidth={2.8} />
+          </span>
+          <span
+            className="text-[11.5px] font-extrabold tracking-wider hidden sm:inline"
+            style={{
+              background: 'linear-gradient(135deg, var(--grad-from), var(--primary), var(--grad-to))',
+              WebkitBackgroundClip: 'text',
+              backgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundSize: '200% auto',
+              animation: 'gradient-shift 8s ease infinite',
+            }}
+          >
+            VEXORIS
+          </span>
+        </div>
+
+        {/* ═══ Credits (center) ═══ */}
+        <div className="flex items-center gap-1.5 flex-wrap justify-center relative min-w-0">
+          <span
+            className="hidden lg:inline-flex items-center gap-1 text-[10px] font-bold shrink-0"
+            style={{ color: 'var(--ink-3)' }}
+          >
+            <Sparkles size={10} style={{ color: 'var(--primary)' }} />
+            تطوير
+          </span>
+
+          <div className="flex items-center gap-1">
+            {/* خالد شوقي — Sky */}
+            <span
+              className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-extrabold
+                         transition-all duration-200 hover:scale-105 cursor-default whitespace-nowrap"
+              style={{
+                background: 'linear-gradient(135deg, rgba(56, 189, 248, 0.15), rgba(14, 165, 233, 0.10))',
+                border: '1px solid rgba(56, 189, 248, 0.35)',
+                color: 'var(--info)',
+                boxShadow: '0 2px 8px -3px rgba(56, 189, 248, 0.30)',
+              }}
+            >
+              <span
+                className="w-1 h-1 rounded-full"
+                style={{ background: 'var(--info)', boxShadow: '0 0 4px var(--info)' }}
+              />
+              نادية عادل
+            </span>
+
+            <span className="text-[9px]" style={{ color: 'var(--ink-4)' }}>·</span>
+
+            {/* خالد شوقي — Violet */}
+            <span
+              className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-extrabold
+                         transition-all duration-200 hover:scale-105 cursor-default whitespace-nowrap"
+              style={{
+                background: 'linear-gradient(135deg, rgba(167, 139, 250, 0.15), rgba(139, 92, 246, 0.10))',
+                border: '1px solid rgba(167, 139, 250, 0.35)',
+                color: 'var(--violet)',
+                boxShadow: '0 2px 8px -3px rgba(167, 139, 250, 0.30)',
+              }}
+            >
+              <span
+                className="w-1 h-1 rounded-full"
+                style={{ background: 'var(--violet)', boxShadow: '0 0 4px var(--violet)' }}
+              />
+              خالد شوقي
+            </span>
+          </div>
+        </div>
+
+        {/* ═══ Copyright (right) ═══ */}
+        <div
+          className="hidden md:flex items-center gap-1 text-[10px] font-semibold shrink-0 relative"
+          style={{ color: 'var(--ink-3)' }}
+        >
+          <Copyright size={10} style={{ color: 'var(--ink-4)' }} />
+          <span>جميع حقوق النسخ والطبع محفوظة لنظام</span>
+          <span
+            className="font-extrabold"
+            style={{
+              background: 'linear-gradient(135deg, var(--grad-from), var(--grad-to))',
+              WebkitBackgroundClip: 'text',
+              backgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+            }}
+          >
+            Vexoris
+          </span>
+          <span className="font-bold tabular" style={{ color: 'var(--primary)' }}>
+            @2025
+          </span>
+        </div>
+
+        {/* Mobile short copyright */}
+        <div
+          className="md:hidden flex items-center gap-1 text-[9.5px] font-bold shrink-0 relative"
+          style={{ color: 'var(--ink-3)' }}
+      
+=== web/src/shared/components/Header.tsx ===
+import { Link, NavLink } from 'react-router-dom';
+import {
+  Search, Bell, LogIn, Home, LayoutDashboard, Info, Shield, Command, Menu,
+  ChevronsLeft, ChevronsRight
+} from 'lucide-react';
+import { motion } from 'framer-motion';
+import { useAuth } from '@/core/auth';
+import { ThemeToggle } from './ThemeToggle';
+import { FontSizeControl } from './FontSizeControl';
+import { UserChip } from './UserChip';
+import { Logo } from './Logo';
+
+interface HeaderProps {
+  variant?: 'public' | 'workspace';
+  onMenuClick?: () => void;
+  onCollapseToggle?: () => void;
+  sidebarCollapsed?: boolean;
+}
+
+export function Header({
+  variant = 'public',
+  onMenuClick,
+  onCollapseToggle,
+  sidebarCollapsed = false,
+}: HeaderProps) {
+  const { user, loading } = useAuth();
+
+  return (
+    <header className={`app-header-floating ${variant}`}>
+      <motion.div
+        initial={{ y: -20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+        className="mx-auto max-w-[1120px] h-14 px-3 rounded-[20px]
+                   flex items-center justify-between gap-2
+                   border relative overflow-hidden"
+        style={{
+          background: 'var(--glass)',
+          borderColor: 'var(--line)',
+          backdropFilter: 'blur(20px) saturate(200%)',
+          WebkitBackdropFilter: 'blur(20px) saturate(200%)',
+          boxShadow:
+            '0 1px 2px rgba(0,0,0,0.04), 0 4px 8px rgba(0,0,0,0.03), 0 16px 40px -8px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.06)',
+        }}
+      >
+        {/* Top glow line */}
+        <div
+          className="absolute top-0 right-0 left-0 h-px pointer-events-none"
+          style={{
+            background: 'linear-gradient(90deg, transparent, var(--primary), transparent)',
+            opacity: 0.5,
+          }}
+        />
+
+        {/* ── Left group: collapse/menu + brand ── */}
+        <div className="flex items-center gap-1.5 shrink-0">
+          {/* Desktop: collapse toggle */}
+          {variant === 'workspace' && (
+            <button
+              type="button"
+              onClick={onCollapseToggle}
+              className="hidden lg:flex btn-icon"
+              aria-label={sidebarCollapsed ? 'فتح القائمة' : 'إغلاق القائمة'}
+              title={sidebarCollapsed ? 'فتح القائمة' : 'إغلاق القائمة'}
+            >
+              {sidebarCollapsed ? (
+                <ChevronsLeft size={16} />
+              ) : (
+                <ChevronsRight size={16} />
+              )}
+            </button>
+          )}
+
+          {/* Mobile: hamburger */}
+          {variant === 'workspace' && (
+            <button
+              type="button"
+              onClick={onMenuClick}
+              className="lg:hidden btn-icon"
+              aria-label="فتح القائمة"
+            >
+              <Menu size={18} />
+            </button>
+          )}
+
+          <Link to={user ? '/dashboard' : '/'} className="flex items-center gap-2 group">
+            <motion.div whileHover={{ scale: 1.08, rotate: 8 }} transition={{ type: 'spring', stiffness: 400 }}>
+              <Logo size={30} />
+            </motion.div>
+            <div className="flex flex-col leading-none">
+              <span
+                className="text-[11.5px] sm:text-[13px] font-extrabold tracking-wide"
+                style={{ color: 'var(--ink)' }}
+              >
+                VEXORIS
+              </span>
+              <span
+                className="hidden sm:block text-[9px] font-bold tracking-[0.18em] mt-0.5"
+                style={{ color: 'var(--ink-4)' }}
+              >
+                MEDICAL ERP
+              </span>
+            </div>
+          </Link>
+        </div>
+
+        {/* ── Center nav ── */}
+        <nav
+          className="hidden md:flex items-center gap-0.5 p-0.5 rounded-lg"
+          style={{ background: 'var(--surface-2)', border: '1px solid var(--line)' }}
+        >
+          {user ? (
+            <NavItem to="/dashboard" icon={<LayoutDashboard size={13} />} label="لوحة التحكم" />
+          ) : (
+            <NavItem to="/" icon={<Home size={13} />} label="الرئيسية" />
+          )}
+          <NavItem to="/about" icon={<Info size={13} />} label="عن النظام" />
+          <NavItem to="/security" icon={<Shield size={13} />} label="الأمان" />
+        </nav>
+
+        {/* ── Search ── */}
+        <button
+          type="button"
+          className="hidden xl:flex items-center gap-2 h-9 px-3 rounded-xl border flex-1 max-w-[320px] mx-auto transition-all duration-200 group"
+          style={{ background: 'var(--bg-2)', borderColor: 'var(--line)', color: 'var(--ink-3)' }}
+        >
+          <Search size={13} className="transition-transform group-hover:scale-110" />
+          <span className="text-[11.5px] font-medium flex-1 text-right">بحث سريع...</span>
+          <kbd
+            className="inline-flex items-center gap-0.5 h-5 px-1.5 rounded text-[10px] font-mono font-bold"
+            style={{ background: 'var(--surface)', border: '1px solid var(--line)', color: 'var(--ink-3)' }}
+          >
+            <Command size={9} /> K
+          </kbd>
+        </button>
+
+        {/* ── Right actions ── */}
+        <div className="flex items-center gap-0.5 shrink-0">
+          <div className="hidden sm:flex">
+            <FontSizeControl />
+          </div>
+
+          <ThemeToggle />
+
+          <button className="btn-icon relative" aria-label="الإشعارات">
+            <Bell size={15} />
+            <span
+              className="absolute top-2 left-2 w-1.5 h-1.5 rounded-full ring-2 animate-pulse"
+              style={{
+                background: 'var(--danger)',
+                boxShadow: '0 0 0 2px var(--surface), 0 0 8px var(--danger)',
+              }}
+            />
+          </button>
+
+          <div className="hidden sm:block w-px h-4 mx-1" style={{ background: 'var(--line)' }} />
+
+          {loading ? (
+     
+=== web/src/shared/components/Loading.tsx ===
+type Size = 'sm' | 'md' | 'lg';
+const DIM: Record<Size, number> = { sm: 20, md: 36, lg: 64 };
+
+export function Loading({ size = 'md', label }: { size?: Size; label?: string }) {
+  const dim = DIM[size];
+  return (
+    <div className="inline-flex flex-col items-center justify-center gap-2">
+      <svg width={dim} height={dim} viewBox="0 0 100 100" style={{ color: 'var(--primary)' }}>
+        <path
+          d="M 24 22 L 50 80 L 76 22"
+          stroke="currentColor"
+          strokeWidth="8"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          fill="none"
+          style={{ strokeDasharray: 140 }}
+          className="animate-draw-v"
+        />
+      </svg>
+      {label && <span className="text-xs font-semibold" style={{ color: 'var(--ink-3)' }}>{label}</span>}
+    </div>
+  );
+}
+
+export function FullPageLoading({ label = 'جاري التحميل...' }: { label?: string }) {
+  return (
+    <div className="flex items-center justify-center" style={{ minHeight: '50vh' }}>
+      <Loading size="lg" label={label} />
+    </div>
+  );
+}
+
+=== web/src/shared/components/Logo.tsx ===
+export function Logo({ size = 28 }: { size?: number }) {
+  return (
+    <div
+      className="relative shrink-0 rounded-lg flex items-center justify-center"
+      style={{
+        width: size,
+        height: size,
+        background: 'linear-gradient(135deg, var(--grad-from), var(--grad-to))',
+        boxShadow:
+          '0 1px 2px rgba(0,0,0,0.15), 0 4px 14px -2px var(--primary-glow), inset 0 1px 0 rgba(255,255,255,0.22)',
+      }}
+    >
+      <svg width={size * 0.55} height={size * 0.55} viewBox="0 0 24 24" fill="none">
+        <path d="M5 4 L12 20 L19 4" stroke="white" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    </div>
+  );
+}
+
+export function LogoMark({ size = 56 }: { size?: number }) {
+  return (
+    <div
+      className="relative rounded-2xl flex items-center justify-center overflow-hidden"
+      style={{
+        width: size,
+        height: size,
+        background: 'linear-gradient(135deg, var(--grad-from) 0%, var(--primary) 50%, var(--grad-to) 100%)',
+        boxShadow:
+          '0 2px 4px rgba(0,0,0,0.10), 0 8px 24px -4px var(--primary-glow), inset 0 1px 0 rgba(255,255,255,0.25)',
+      }}
+    >
+      <div
+        className="absolute inset-0 opacity-30"
+        style={{ background: 'radial-gradient(circle at 30% 20%, rgba(255,255,255,0.5), transparent 60%)' }}
+      />
+      <svg width={size * 0.5} height={size * 0.5} viewBox="0 0 24 24" fill="none" className="relative">
+        <path d="M5 4 L12 20 L19 4" stroke="white" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    </div>
+  );
+}
+
+=== web/src/shared/components/PlaceholderPage.tsx ===
+import { Sparkles } from 'lucide-react';
+
+export function PlaceholderPage({ title, description }: { title: string; description?: string }) {
+  return (
+    <div className="space-y-4">
+      <h1 className="text-xl sm:text-2xl font-bold" style={{ color: 'var(--ink)' }}>{title}</h1>
+      <div className="card p-10 text-center">
+        <div className="w-14 h-14 mx-auto mb-4 rounded-2xl flex items-center justify-center"
+          style={{ background: 'var(--primary-soft)', color: 'var(--primary)',
+            boxShadow: 'inset 0 0 0 1px color-mix(in srgb, var(--primary) 30%, transparent)' }}>
+          <Sparkles size={24} />
+        </div>
+        <h3 className="text-sm font-bold mb-1" style={{ color: 'var(--ink)' }}>قريباً</h3>
+        <p className="text-xs max-w-md mx-auto" style={{ color: 'var(--ink-3)' }}>
+          {description || 'هذه الوحدة قيد التطوير وستكون متاحة في التحديث القادم.'}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+=== web/src/shared/components/Sidebar.tsx ===
+import { NavLink } from 'react-router-dom';
+import {
+  LayoutDashboard, BarChart3, Stethoscope, Ambulance, FileText,
+  Users, Shield, Database, ScrollText, GraduationCap,
+  Activity, ClipboardList, ChevronLeft, ChevronRight,
+  Settings, HelpCircle, BookOpen, X
+} from 'lucide-react';
+
+interface SidebarProps {
+  mobileOpen?: boolean;
+  onMobileClose?: () => void;
+  collapsed?: boolean;
+  onCollapseToggle?: () => void;
+}
+
+type NavItemType = { to: string; icon: React.ReactNode; label: string };
+type NavSection = { label: string; items: NavItemType[] };
+
+const SECTIONS: NavSection[] = [
+  {
+    label: 'نظرة عامة',
+    items: [
+      { to: '/dashboard', icon: <LayoutDashboard size={16} />, label: 'لوحة التحكم' },
+      { to: '/analytics', icon: <BarChart3 size={16} />,       label: 'التحليلات' },
+    ],
+  },
+  {
+    label: 'الوحدات الطبية',
+    items: [
+      { to: '/medical-audit',   icon: <Stethoscope size={16} />,   label: 'المراجعة الطبية' },
+      { to: '/emergency-audit', icon: <Ambulance size={16} />,     label: 'مراجعة الطوارئ' },
+      { to: '/doctor-notes',    icon: <FileText size={16} />,      label: 'ملاحظات الأطباء' },
+      { to: '/discharge',       icon: <ClipboardList size={16} />, label: 'مؤشر الخروج' },
+      { to: '/workflow',        icon: <Activity size={16} />,      label: 'سير العمل' },
+    ],
+  },
+  {
+    label: 'التدريب',
+    items: [
+      { to: '/courses', icon: <GraduationCap size={16} />, label: 'الدورات' },
+      { to: '/library', icon: <BookOpen size={16} />,      label: 'المكتبة' },
+    ],
+  },
+  {
+    label: 'الإدارة',
+    items: [
+      { to: '/admin/users',     icon: <Users size={16} />,      label: 'المستخدمون' },
+      { to: '/admin/rbac',      icon: <Shield size={16} />,     label: 'الصلاحيات' },
+      { to: '/admin/catalogs',  icon: <Database size={16} />,   label: 'الفهارس' },
+      { to: '/admin/audit-log', icon: <ScrollText size={16} />, label: 'سجل التدقيق' },
+    ],
+  },
+];
+
+export function Sidebar({
+  mobileOpen = false,
+  onMobileClose,
+  collapsed = false,
+  onCollapseToggle,
+}: SidebarProps) {
+  return (
+    <aside
+      data-mobile-open={mobileOpen ? 'true' : 'false'}
+      className="app-sidebar flex flex-col border-l overflow-hidden relative"
+      style={{
+        background: 'var(--surface)',
+        borderColor: 'var(--line)',
+        width: collapsed ? 'var(--sidebar-w-collapsed)' : 'var(--sidebar-w)',
+      }}
+    >
+      {/* Mobile close button */}
+      <button
+        type="button"
+        onClick={onMobileClose}
+        className="lg:hidden absolute top-3 left-3 btn-icon z-10"
+        aria-label="إغلاق القائمة"
+      >
+        <X size={18} />
+      </button>
+
+      {/* Top glow line */}
+      <div
+        className="absolute top-0 right-0 left-0 h-px pointer-events-none"
+        style={{ background: 'linear-gradient(90deg, transparent, var(--primary), transparent)', opacity: 0.4 }}
+      />
+
+      <nav className="sidebar-nav relative flex-1 overflow-y-auto overflow-x-hidden py-3 px-2 mt-11 lg:mt-0">
+        {SECTIONS.map((section, idx) => (
+          <div key={section.label} className={idx > 0 ? 'sidebar-section mt-4' : 'sidebar-section'}>
+            {/* ✅ نعرضه دايماً — CSS هيخفيه لو collapsed (desktop only) */}
+            <div className="sidebar-label label px-2 mb-1.5">{section.label}</div>
+            <div className="space-y-0.5">
+              {section.items.map((item) => (
+                <NavLink
+                  key={item.to}
+                  to={item.to}
+                  onClick={onMobileClose}
+                  className={({ isActive }) =>
+                    `nav-item ${isActive ? 'active' : ''}`
+                  }
+                  title={item.label}
+                >
+                  <span className="sidebar-icon shrink-0">{item.icon}</span>
+                  <span className="sidebar-text flex-1 truncate">{item.label}</span>
+                </NavLink>
+              ))}
+            </div>
+          </div>
+        ))}
+
+        <div className="sidebar-section mt-4">
+          <div className="sidebar-label label px-2 mb-1.5">النظام</div>
+          <div className="space-y-0.5">
+            <NavLink
+              to="/settings"
+              onClick={onMobileClose}
+              className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
+              title="الإعدادات"
+            >
+              <Settings size={16} className="sidebar-icon shrink-0" />
+              <span className="sidebar-text flex-1">الإعدادات</span>
+            </NavLink>
+            <NavLink
+              to="/help"
+              onClick={onMobileClose}
+              className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
+              title="المساعدة"
+            >
+              <HelpCircle size={16} className="sidebar-icon shrink-0" />
+              <span className="sidebar-text flex-1">المساعدة</span>
+            </NavLink>
+          </div>
+        </div>
+      </nav>
+
+      {/* Desktop footer toggle */}
+      <div
+        className="hidden lg:flex relative border-t p-2 items-center"
+        style={{ borderColor: 'var(--line)' }}
+      >
+        <button
+          type="button"
+          onClick={onCollapseToggle}
+          className="btn-icon w-full justify-center"
+          title={collapsed ? 'توسيع القائمة' : 'تصغير القائمة'}
+        >
+          {collapsed ? <ChevronLeft size={14} /> : <ChevronRight size={14} />}
+        </button>
+      </div>
+    </aside>
+  );
+}
+
+=== web/src/shared/components/ThemeToggle.tsx ===
+import { useEffect, useState } from 'react';
+import { Moon, Sun } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+
+type Theme = 'light' | 'dark';
+
+function applyTheme(theme: Theme) {
+  document.documentElement.classList.toggle('dark', theme === 'dark');
+  localStorage.setItem('vex-theme', theme);
+}
+
+export function ThemeToggle() {
+  const [theme, setTheme] = useState<Theme>(() => {
+    const saved = localStorage.getItem('vex-theme') as Theme | null;
+    if (saved) return saved;
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  });
+
+  useEffect(() => { applyTheme(theme); }, [theme]);
+
+  return (
+    <button
+      type="button"
+      className="btn-icon overflow-hidden relative"
+      aria-label="تبديل الوضع"
+      title={theme === 'dark' ? 'الوضع النهاري' : 'الوضع الليلي'}
+      onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+    >
+      <AnimatePresence mode="wait" initial={false}>
+        <motion.span
+          key={theme}
+          initial={{ y: -20, opacity: 0, rotate: -90 }}
+          animate={{ y: 0, opacity: 1, rotate: 0 }}
+          exit={{ y: 20, opacity: 0, rotate: 90 }}
+          transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+          className="absolute inset-0 flex items-center justify-center"
+        >
+          {theme === 'dark' ? <Sun size={15} /> : <Moon size={15} />}
+        </motion.span>
+      </AnimatePresence>
+    </button>
+  );
+}
+
+=== web/src/shared/components/UserChip.tsx ===
+import { useEffect, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { ChevronDown, User, Monitor, LogOut, ShieldCheck } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useAuth } from '@/core/auth';
+
+const ROLE_LABEL: Record<string, string> = {
+  super_admin: 'المطور',
+  admin: 'إدارة السجلات',
+  manager: 'المدير الطبي',
+  auditor: 'مراجع جودة',
+  senior: 'رئيس قسم',
+  doctor: 'طبيب',
+  reviewer_doctor: 'طبيب مراجع',
+  viewer: 'مراجع',
+};
+
+export function UserChip() {
+  const { profile, user, signOut } = useAuth();
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handler(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    }
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+
+  const name = profile?.display_name || profile?.username || user?.email?.split('@')[0] || 'مستخدم';
+  const role = profile?.role || 'viewer';
+  const roleLabel = ROLE_LABEL[role] || role;
+  const initial = name.charAt(0).toUpperCase();
+
+  return (
+    <div ref={ref} className="relative">
+      <button
+        type="button"
+        onClick={() => setOpen(v => !v)}
+        className="inline-flex items-center gap-2 h-8 pr-1 pl-2 rounded-lg border transition-all duration-150"
+        style={{
+          background: 'var(--surface-2)',
+          borderColor: 'var(--line)',
+        }}
+      >
+        <div
+          className="w-6 h-6 rounded-md flex items-center justify-center text-white text-[10.5px] font-extrabold shrink-0"
+          style={{
+            background: 'linear-gradient(135deg, var(--grad-from), var(--grad-to))',
+            boxShadow: '0 1px 2px rgba(0,0,0,0.15)',
+          }}
+        >
+          {initial}
+        </div>
+        <div className="text-right leading-tight max-w-[100px]">
+          <div className="text-[11px] font-bold truncate" style={{ color: 'var(--ink)' }}>{name}</div>
+          <div className="text-[9.5px] font-bold" style={{ color: 'var(--primary)' }}>{roleLabel}</div>
+        </div>
+        <ChevronDown
+          size={11}
+          style={{ color: 'var(--ink-4)' }}
+          className={`transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
+        />
+      </button>
+
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, y: -6, scale: 0.97 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -6, scale: 0.97 }}
+            transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
+            className="absolute left-0 top-full mt-2 w-64 rounded-xl border z-50 overflow-hidden"
+            style={{
+              background: 'var(--surface)',
+              borderColor: 'var(--line-2)',
+              boxShadow:
+                '0 4px 8px rgba(10,15,26,0.06), 0 12px 24px rgba(10,15,26,0.08), 0 24px 48px rgba(10,15,26,0.10)',
+            }}
+          >
+            <div className="p-3 border-b" style={{ borderColor: 'var(--line)' }}>
+              <div className="flex items-center gap-2.5">
+                <div
+                  className="w-10 h-10 rounded-lg flex items-center justify-center text-white text-sm font-extrabold shrink-0"
+                  style={{
+                    background: 'linear-gradient(135deg, var(--grad-from), var(--grad-to))',
+                    boxShadow: '0 2px 6px rgba(0,0,0,0.15)',
+                  }}
+                >
+                  {initial}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="text-xs font-bold truncate" style={{ color: 'var(--ink)' }}>{name}</div>
+                  <div className="text-[10.5px] truncate mt-0.5" style={{ color: 'var(--ink-3)' }}>{user?.email}</div>
+                </div>
+              </div>
+              <div
+                className="mt-2 inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-md"
+                style={{ background: 'var(--primary-soft)', color: 'var(--primary)' }}
+              >
+                <ShieldCheck size={10} />
+                {roleLabel}
+              </div>
+            </div>
+
+            <div className="p-1">
+              <MenuItem to="/profile" icon={<User size={13} />} onClick={() => setOpen(false)}>
+                إدارة الحساب
+              </MenuItem>
+              <MenuItem to="/sessions" icon={<Monitor size={13} />} onClick={() => setOpen(false)}>
+                الجلسات النشطة
+              </MenuItem>
+            </div>
+
+            <div className="p-1 border-t" style={{ borderColor: 'var(--line)' }}>
+              <button
+                type="button"
+                onClick={() => { void signOut(); setOpen(false); }}
+                className="w-full flex items-center gap-2 h-7 px-2 text-xs font-semibold rounded-md transition-colors"
+                style={{ color: 'var(--danger)' }}
+                onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = 'rgba(220,38,38,0.08)'; }}
+                onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
+              >
+                <LogOut size={13} />
+                تسجيل الخروج
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+function MenuItem({ to, icon, children, onClick }: {
+  to: string; icon: React.ReactNode; children: React.ReactNode; onClick: () => void;
+}) {
+  return (
+    <Link
+      to={to}
+      onClick={onClick}
+      className="w-full flex items-center gap-2 h-7 px-2 text-xs font-semibold rounded-md transition-colors"
+      style={{ color: 'var(--ink-2)' }}
+      onMouseEnter={(e) => {
+        (e.currentTarget as HTMLElement).style.background = 'var(--su
+=== web/src/shared/layouts/AppLayout.tsx ===
+import { Outlet } from 'react-router-dom';
+import { Header } from '@/shared/components/Header';
+import { Footer } from '@/shared/components/Footer';
+
+export function AppLayout() {
+  return (
+    <div className="app-shell no-sidebar">
+      <Header variant="public" />
+      <main className="app-main">
+        <div className="content-container">
+          <Outlet />
+        </div>
+      </main>
+      <Footer variant="public" />
+    </div>
+  );
+}
+
+=== web/src/shared/layouts/WorkspaceLayout.tsx ===
+import { useState } from 'react';
+import { Outlet } from 'react-router-dom';
+import { Header } from '@/shared/components/Header';
+import { Footer } from '@/shared/components/Footer';
+import { Sidebar } from '@/shared/components/Sidebar';
+
+export function WorkspaceLayout() {
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  // Persist collapse across refreshes
+  const [collapsed, setCollapsed] = useState<boolean>(() => {
+    return localStorage.getItem('vex-sidebar-collapsed') === 'true';
+  });
+
+  function toggleCollapsed() {
+    setCollapsed(prev => {
+      const next = !prev;
+      localStorage.setItem('vex-sidebar-collapsed', String(next));
+      return next;
+    });
+  }
+
+  return (
+    <div
+      className="app-shell"
+      data-sidebar={collapsed ? 'collapsed' : undefined}
+    >
+      <Header
+        variant="workspace"
+        onMenuClick={() => setMobileOpen(true)}
+        onCollapseToggle={toggleCollapsed}
+        sidebarCollapsed={collapsed}
+      />
+      <Sidebar
+        mobileOpen={mobileOpen}
+        onMobileClose={() => setMobileOpen(false)}
+        collapsed={collapsed}
+        onCollapseToggle={toggleCollapsed}
+      />
+      <div
+        className="sidebar-overlay"
+        data-open={mobileOpen ? 'true' : 'false'}
+        onClick={() => setMobileOpen(false)}
+      />
+      <main className="app-main">
+        <div className="content-container">
+          <Outlet />
+        </div>
+      </main>
+      <Footer variant="workspace" />
+    </div>
+  );
+}
+
+=== web/src/shared/lib/cn.ts ===
+export function cn(...classes: (string | false | null | undefined)[]) {
+  return classes.filter(Boolean).join(' ');
+}
+
+=== web/src/shared/lib/format.ts ===
+export const fmtNum = (n: number | null | undefined): string => {
+  if (n == null) return '—';
+  return n.toLocaleString('ar-EG');
+};
+
+export const fmtPct = (n: number | null | undefined): string => {
+  if (n == null) return '—';
+  return `${n.toFixed(0)}%`;
+};
+
+export const fmtMonth = (iso: string): string => {
+  const [y, m] = iso.split('-');
+  const date = new Date(Number(y), Number(m) - 1, 1);
+  return date.toLocaleDateString('ar-EG', { month: 'short', year: '2-digit' });
+};
+
+export const fmtDate = (iso: string | null): string => {
+  if (!iso) return '—';
+  return new Date(iso).toLocaleDateString('ar-EG', { dateStyle: 'medium' });
+};
+
+=== web/src/shared/lib/roles.ts ===
+export const ROLE_META: Record<string, { label: string; color: string; icon: string }> = {
+  super_admin: { label: 'المطور', color: '#8b5cf6', icon: 'shield-check' },
+  admin:       { label: 'إدارة السجلات', color: '#0ea5e9', icon: 'settings' },
+  manager:     { label: 'المدير الطبي', color: '#06b6d4', icon: 'briefcase-medical' },
+  auditor:     { label: 'مراجع جودة', color: '#10b981', icon: 'clipboard-check' },
+  senior:      { label: 'رئيس قسم', color: '#f59e0b', icon: 'user-cog' },
+  doctor:      { label: 'طبيب', color: '#6366f1', icon: 'stethoscope' },
+  reviewer_doctor: { label: 'طبيب مراجع', color: '#a855f7', icon: 'user-round-check' },
+  viewer:      { label: 'مراجع', color: '#64748b', icon: 'eye' },
+};
+
+export const getRoleMeta = (role: string) =>
+  ROLE_META[role] ?? { label: role, color: '#64748b', icon: 'user' };
+
+=== web/src/vite-env.d.ts ===
+/// <reference types="vite/client" />
+
+interface ImportMetaEnv {
+  readonly VITE_SUPABASE_URL: string;
+  readonly VITE_SUPABASE_ANON_KEY: string;
+}
+
+interface ImportMeta {
+  readonly env: ImportMetaEnv;
+}
+
+=== web/tailwind.config.js ===
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
+  darkMode: 'class',
+  theme: {
+    extend: {
+      screens: {
+        'xs': '420px',
+      },
+      screens: {
+        'xs': '420px',
+      },
+      fontFamily: {
+        sans: ['"IBM Plex Sans Arabic"', 'system-ui', 'sans-serif'],
+        mono: ['"IBM Plex Mono"', 'monospace'],
+      },
+      colors: {
+        bg:          'var(--bg)',
+        'bg-2':      'var(--bg-2)',
+        surface:     'var(--surface)',
+        'surface-2': 'var(--surface-2)',
+        'surface-3': 'var(--surface-3)',
+        glass:       'var(--glass)',
+        line:        'var(--line)',
+        'line-2':    'var(--line-2)',
+        'line-3':    'var(--line-3)',
+        ink:         'var(--ink)',
+        'ink-2':     'var(--ink-2)',
+        'ink-3':     'var(--ink-3)',
+        'ink-4':     'var(--ink-4)',
+        primary: {
+          DEFAULT: 'var(--primary)',
+          hover:   'var(--primary-h)',
+          soft:    'var(--primary-soft)',
+        },
+        success: 'var(--success)',
+        warning: 'var(--warning)',
+        danger:  'var(--danger)',
+        info:    'var(--info)',
+      },
+      fontSize: {
+        '2xs': '10.5px',
+        'xs':  '11.5px',
+        'sm':  '13px',
+        'base':'14px',
+        'md':  '15px',
+        'lg':  '17px',
+        'xl':  '20px',
+        '2xl': '24px',
+        '3xl': '30px',
+        '4xl': '38px',
+        '5xl': '48px',
+      },
+      borderRadius: {
+        DEFAULT: '6px',
+        md: '8px',
+        lg: '10px',
+        xl: '12px',
+        '2xl': '16px',
+        '3xl': '20px',
+      },
+      boxShadow: {
+        // Multi-layer shadows for premium feel
+        'xs':  '0 1px 1px rgba(10,15,26,0.03), 0 2px 4px rgba(10,15,26,0.03)',
+        'sm':  '0 1px 1px rgba(10,15,26,0.03), 0 2px 4px rgba(10,15,26,0.03), 0 4px 8px rgba(10,15,26,0.02)',
+        'md':  '0 1px 2px rgba(10,15,26,0.04), 0 2px 4px rgba(10,15,26,0.03), 0 4px 8px rgba(10,15,26,0.03), 0 8px 16px rgba(10,15,26,0.03)',
+        'lg':  '0 2px 4px rgba(10,15,26,0.04), 0 4px 8px rgba(10,15,26,0.04), 0 8px 16px rgba(10,15,26,0.04), 0 16px 32px rgba(10,15,26,0.05)',
+        'xl':  '0 4px 8px rgba(10,15,26,0.05), 0 8px 16px rgba(10,15,26,0.05), 0 16px 32px rgba(10,15,26,0.06), 0 32px 64px rgba(10,15,26,0.07)',
+        'modal': '0 8px 16px rgba(10,15,26,0.08), 0 16px 32px rgba(10,15,26,0.08), 0 32px 64px rgba(10,15,26,0.12)',
+        'float': '0 4px 8px rgba(10,15,26,0.06), 0 8px 24px rgba(10,15,26,0.08), 0 16px 48px rgba(10,15,26,0.06)',
+        // Colored shadows for hover states
+        'glow-primary': '0 8px 32px -8px rgba(13,125,111,0.35)',
+        'glow-violet':  '0 8px 32px -8px rgba(124,58,237,0.30)',
+        'glow-amber':   '0 8px 32px -8px rgba(217,119,6,0.30)',
+        'glow-rose':    '0 8px 32px -8px rgba(220,38,38,0.30)',
+        'glow-sky':     '0 8px 32px -8px rgba(2,132,199,0.30)',
+      },
+      keyframes: {
+        'draw-v': {
+          '0%':   { strokeDashoffset: '140', opacity: '0.3' },
+          '50%':  { strokeDashoffset: '0',   opacity: '1' },
+          '100%': { strokeDashoffset: '-140',opacity: '0.3' },
+        },
+        'fade-up': {
+          '0%':   { opacity: '0', transform: 'translateY(10px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        'fade-in': {
+          '0%':   { opacity: '0' },
+          '100%': { opacity: '1' },
+        },
+        'scale-in': {
+          '0%':   { opacity: '0', transform: 'scale(0.96)' },
+          '100%': { opacity: '1', transform: 'scale(1)' },
+        },
+        'shimmer': {
+          '0%':   { backgroundPosition: '-200% 0' },
+          '100%': { backgroundPosition: '200% 0' },
+        },
+        'float-slow': {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%':      { transform: 'translateY(-6px)' },
+        },
+      },
+      animation: {
+        'draw-v':     'draw-v 1.4s ease-in-out infinite',
+        'fade-up':    'fade-up 0.4s cubic-bezier(0.16,1,0.3,1)',
+        'fade-in':    'fade-in 0.3s ease-out',
+        'scale-in':   'scale-in 0.2s cubic-bezier(0.16,1,0.3,1)',
+        'shimmer':    'shimmer 2s linear infinite',
+        'float-slow': 'float-slow 6s ease-in-out infinite',
+      },
+    },
+  },
+  plugins: [],
+};
+
+=== web/tsconfig.app.json ===
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "useDefineForClassFields": true,
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "moduleDetection": "force",
+    "noEmit": true,
+    "jsx": "react-jsx",
+
+    "strict": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "noFallthroughCasesInSwitch": true,
+
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": ["src"]
+}
+
+=== web/tsconfig.json ===
+{
+  "files": [],
+  "references": [
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.node.json" }
+  ]
+}
+
+=== web/tsconfig.node.json ===
+{
+  "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo",
+    "target": "es2023",
+    "lib": ["ES2023"],
+    "types": ["node"],
+    "skipLibCheck": true,
+
+    /* Bundler mode */
+    "module": "nodenext",
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true,
+    "moduleDetection": "force",
+    "noEmit": true,
+
+    /* Linting */
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "erasableSyntaxOnly": true,
+    "noFallthroughCasesInSwitch": true
+  },
+  "include": ["vite.config.ts"]
+}
+
+=== web/vite.config.ts ===
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import path from 'node:path';
+
+export default defineConfig({
+  plugins: [react()],
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+    },
+  },
+});
+
+=== web/wrangler.jsonc ===
+{
+  "name": "vexoris",
+  "compatibility_date": "2025-01-01",
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "single-page-application"
+  }
+}
