@@ -36,3 +36,4 @@ supabase/.branches/
 # Misc
 *.tsbuildinfo
 coverage/
+.vexoris-db.env
