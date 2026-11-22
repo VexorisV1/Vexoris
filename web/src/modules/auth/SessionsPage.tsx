@@ -5,8 +5,13 @@ import { supabase } from '@/core/supabase';
 import { useAuth } from '@/core/auth';
 
 interface SessionRow {
-  id: string; device: string | null; user_agent: string | null; ip_address: string | null;
-  created_at: string; last_active: string; ended_at: string | null;
+  id: string;
+  device_label: string | null;
+  user_agent: string | null;
+  ip_address: string | null;
+  created_at: string;
+  last_active_at: string;
+  is_current: boolean;
 }
 
 function detectDevice(ua: string | null): { icon: 'mobile' | 'desktop'; label: string } {
@@ -25,21 +30,24 @@ export default function SessionsPage() {
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState('');
 
+  async function load() {
+    if (!user) return;
+    setLoading(true);
+    setErr('');
+    const { data, error } = await supabase.rpc('get_my_sessions');
+    if (error) setErr(error.message);
+    else setRows((data || []) as SessionRow[]);
+    setLoading(false);
+  }
+
   useEffect(() => {
-    (async () => {
-      if (!user) return;
-      const { data, error } = await supabase.from('sessions').select('*')
-        .eq('user_id', user.id).is('ended_at', null).order('last_active', { ascending: false });
-      if (error) setErr(error.message);
-      else setRows((data || []) as SessionRow[]);
-      setLoading(false);
-    })();
+    void load();
   }, [user]);
 
   async function endSession(id: string) {
-    const { error } = await supabase.from('sessions')
-      .update({ ended_at: new Date().toISOString() }).eq('id', id);
-    if (!error) setRows(r => r.filter(x => x.id !== id));
+    const { error } = await supabase.rpc('kill_session', { p_session_id: id });
+    if (!error) setRows((r) => r.filter((x) => x.id !== id));
+    else setErr(error.message);
   }
 
   return (
@@ -69,7 +77,7 @@ export default function SessionsPage() {
             <Activity size={22} />
           </div>
           <h3 className="text-sm font-bold mb-1" style={{ color: 'var(--ink)' }}>لا توجد جلسات مسجّلة</h3>
-          <p className="text-xs" style={{ color: 'var(--ink-3)' }}>تتبع الجلسات التفصيلي سيكون متاحاً في التحديث القادم.</p>
+          <p className="text-xs" style={{ color: 'var(--ink-3)' }}>سيتم تسجيل جهازك الحالي عند أول تحقق.</p>
         </div>
       ) : (
         <div className="space-y-2">
@@ -83,15 +91,25 @@ export default function SessionsPage() {
                   <Icon size={18} />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="text-sm font-bold" style={{ color: 'var(--ink)' }}>{r.device || dev.label}</div>
+                  <div className="text-sm font-bold flex items-center gap-2" style={{ color: 'var(--ink)' }}>
+                    {r.device_label || dev.label}
+                    {r.is_current && (
+                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded"
+                        style={{ background: 'var(--primary-soft)', color: 'var(--primary)' }}>
+                        الحالي
+                      </span>
+                    )}
+                  </div>
                   <div className="text-[10.5px] mt-0.5 flex items-center gap-2 flex-wrap" style={{ color: 'var(--ink-3)' }}>
                     <span className="inline-flex items-center gap-1"><Globe size={10} />{r.ip_address || '—'}</span>
-                    <span className="inline-flex items-center gap-1"><Clock size={10} />{fmt(r.last_active)}</span>
+                    <span className="inline-flex items-center gap-1"><Clock size={10} />{fmt(r.last_active_at)}</span>
                   </div>
                 </div>
-                <button onClick={() => endSession(r.id)} className="btn btn-ghost h-8 text-[11px]" style={{ color: 'var(--danger)' }}>
-                  <LogOut size={12} /> إنهاء
-                </button>
+                {!r.is_current && (
+                  <button onClick={() => endSession(r.id)} className="btn btn-ghost h-8 text-[11px]" style={{ color: 'var(--danger)' }}>
+                    <LogOut size={12} /> إنهاء
+                  </button>
+                )}
               </div>
             );
           })}

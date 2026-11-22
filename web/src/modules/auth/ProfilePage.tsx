@@ -20,7 +20,7 @@ export default function ProfilePage() {
   useEffect(() => {
     if (profile) {
       setDisplayName(profile.display_name || '');
-      setDepartment((profile as { department?: string }).department || '');
+      setDepartment(profile.department || '');
     }
   }, [profile]);
 
