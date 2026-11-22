@@ -1,8 +1,5 @@
-# 1. إجبار ملفات JavaScript على النوع الصحيح (بما فيها ملفات Vite داخل /assets/)
+# 1. قواعد صارمة لملفات JavaScript (بما فيها ملفات Vite داخل /assets/)
 /assets/*.js
-  Content-Type: application/javascript; charset=utf-8
-
-/assets/*.mjs
   Content-Type: application/javascript; charset=utf-8
 
 /*.js
@@ -11,23 +8,21 @@
 /*.mjs
   Content-Type: application/javascript; charset=utf-8
 
-# 2. تثبيت أنواع الملفات الأخرى
+# 2. قواعد صارمة لملفات CSS
 /assets/*.css
   Content-Type: text/css; charset=utf-8
 
 /*.css
   Content-Type: text/css; charset=utf-8
 
-/*.json
-  Content-Type: application/json; charset=utf-8
-
+# 3. أنواع أخرى
 /*.ico
   Content-Type: image/x-icon
 
 /*.svg
   Content-Type: image/svg+xml
 
-# 3. رؤوس الأمان (احتفظ بها)
+# 4. رؤوس الأمان (احتفظ بها)
 /*
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
