@@ -9,7 +9,6 @@ export const fmtPct = (n: number | null | undefined): string => {
 };
 
 export const fmtMonth = (iso: string): string => {
-  // "2025-12" → "ديسمبر ٢٥"
   const [y, m] = iso.split('-');
   const date = new Date(Number(y), Number(m) - 1, 1);
   return date.toLocaleDateString('ar-EG', { month: 'short', year: '2-digit' });

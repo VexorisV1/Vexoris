@@ -1,7 +1,6 @@
 import { supabase } from './supabase';
 import type { OverviewStats, MonthlyTrendPoint, QualityKpis, DateType } from './types';
 
-// Helper — يلف أي RPC بـ timeout + error handling
 async function callRpc<T>(name: string, args: Record<string, unknown>, timeoutMs = 35_000): Promise<T> {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);

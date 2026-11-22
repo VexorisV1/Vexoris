@@ -1,4 +1,3 @@
-// ============ Dashboard RPC Types ============
 export interface OverviewStats {
   overall_pct: number;
   total_forms: number;
@@ -10,7 +9,7 @@ export interface OverviewStats {
 }
 
 export interface MonthlyTrendPoint {
-  month: string;        // "2025-12"
+  month: string;
   count: number;
   percentage: number;
   total_score: number;
@@ -25,5 +24,4 @@ export interface QualityKpis {
   avg_per_reviewer: number;
 }
 
-// ============ Date Type (القديم كان بيستخدمها) ============
 export type DateType = 'discharge' | 'admission' | 'review';

@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { rpc } from '@/core/rpc';
 import type { DateType } from '@/core/types';
 
-const DASH_CACHE = 5 * 60 * 1000; // 5 دقائق — overview_stats بطيء
+const DASH_CACHE = 5 * 60 * 1000;
 
 export function useOverviewStats(dateType: DateType = 'discharge') {
   return useQuery({
