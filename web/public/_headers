@@ -1,9 +1,19 @@
-# تثبيت أنواع الملفات الأساسية
+# 1. إجبار ملفات JavaScript على النوع الصحيح (بما فيها ملفات Vite داخل /assets/)
+/assets/*.js
+  Content-Type: application/javascript; charset=utf-8
+
+/assets/*.mjs
+  Content-Type: application/javascript; charset=utf-8
+
 /*.js
-  Content-Type: text/javascript; charset=utf-8
+  Content-Type: application/javascript; charset=utf-8
 
 /*.mjs
-  Content-Type: text/javascript; charset=utf-8
+  Content-Type: application/javascript; charset=utf-8
+
+# 2. تثبيت أنواع الملفات الأخرى
+/assets/*.css
+  Content-Type: text/css; charset=utf-8
 
 /*.css
   Content-Type: text/css; charset=utf-8
@@ -17,7 +27,7 @@
 /*.svg
   Content-Type: image/svg+xml
 
-# رؤوس الأمان (احتفظ بها)
+# 3. رؤوس الأمان (احتفظ بها)
 /*
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
