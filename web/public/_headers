@@ -1,3 +1,23 @@
+# تثبيت أنواع الملفات الأساسية
+/*.js
+  Content-Type: application/javascript; charset=utf-8
+
+/*.mjs
+  Content-Type: application/javascript; charset=utf-8
+
+/*.css
+  Content-Type: text/css; charset=utf-8
+
+/*.json
+  Content-Type: application/json; charset=utf-8
+
+/*.ico
+  Content-Type: image/x-icon
+
+/*.svg
+  Content-Type: image/svg+xml
+
+# رؤوس الأمان التي أضفتها سابقاً (احتفظ بها)
 /*
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
